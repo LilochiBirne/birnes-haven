@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#3A4D5C">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Birnes Haven">
+<title>Birnes Haven</title>
+<link rel="manifest" href="manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #F5F0E8;
+  --warm: #FAF7F2;
+  --brown: #3A4D5C;
+  --mbrown: #4A6274;
+  --tan: #C4956A;
+  --gold: #D4A847;
+  --sage: #5A8A5A;
+  --red: #C75B4E;
+  --border: rgba(44,24,16,0.11);
+  --shadow: 0 2px 16px rgba(44,24,16,0.09);
+  --u1: #C4956A;
+  --u2: #6A9E6A;
+  --u3: #6B8CAE;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-top: env(safe-area-inset-top, 0px);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; overflow: hidden; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--cream);
+  color: var(--brown);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── LOADING BAR ── */
+#lbar { position:fixed;top:0;left:0;right:0;height:2px;background:var(--gold);transform:scaleX(0);transform-origin:left;z-index:9999;transition:transform 0.3s; }
+#lbar.on { animation: lbaranim 1.2s ease infinite; }
+@keyframes lbaranim { 0%{transform:scaleX(0)}60%{transform:scaleX(0.7)}100%{transform:scaleX(1)} }
+
+/* ── SETUP OVERLAY ── */
+#setup-overlay {
+  position: fixed; inset: 0;
+  background: rgba(44,24,16,0.95);
+  display: flex; align-items: flex-end;
+  z-index: 999; padding: 0;
+}
+#setup-overlay.hidden { display: none; }
+.setup-sheet {
+  background: var(--warm);
+  border-radius: 24px 24px 0 0;
+  padding: 28px 24px calc(28px + var(--safe-bottom));
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.setup-sheet h2 { font-family:'Playfair Display',serif; font-size:22px; margin-bottom:4px; }
+.setup-sub { font-family:'DM Mono',monospace; font-size:10px; color:rgba(44,24,16,0.4); letter-spacing:1px; margin-bottom:22px; }
+.setup-steps { display:flex; flex-direction:column; gap:10px; margin-bottom:22px; }
+.setup-step { display:flex; gap:12px; align-items:flex-start; background:var(--cream); border-radius:12px; padding:13px; }
+.step-n { font-family:'Playfair Display',serif; font-size:20px; color:var(--gold); min-width:24px; line-height:1.1; }
+.step-t { font-size:13px; line-height:1.6; }
+.step-t strong { display:block; font-size:13px; margin-bottom:1px; }
+.step-t a { color:var(--mbrown); }
+.step-t code { font-family:'DM Mono',monospace; font-size:11px; background:rgba(44,24,16,0.08); padding:1px 5px; border-radius:4px; }
+.setup-label { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:rgba(44,24,16,0.45); margin-bottom:6px; display:block; }
+.setup-input {
+  font-family:'DM Mono',monospace; font-size:13px;
+  background:var(--cream); border:1.5px solid var(--border);
+  border-radius:12px; padding:14px; color:var(--brown);
+  outline:none; width:100%; margin-bottom:12px;
+}
+.setup-input:focus { border-color:var(--gold); }
+.btn-connect {
+  font-family:'DM Mono',monospace; font-size:12px; letter-spacing:2px; text-transform:uppercase;
+  background:var(--brown); color:var(--gold); border:none;
+  border-radius:14px; padding:16px; width:100%; cursor:pointer;
+}
+
+/* ── HEADER ── */
+header {
+  background: var(--brown);
+  padding: calc(14px + var(--safe-top)) 20px 12px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0;
+}
+.logo-wrap { display:flex; flex-direction:column; }
+.logo-name { font-family:'Playfair Display',serif; font-size:19px; color:var(--gold); }
+.logo-sub { font-family:'DM Mono',monospace; font-size:9px; color:rgba(212,168,71,0.45); letter-spacing:3px; text-transform:uppercase; margin-top:1px; }
+.sync-pill {
+  font-family:'DM Mono',monospace; font-size:9px; letter-spacing:1px;
+  display:flex; align-items:center; gap:5px;
+  border:1px solid rgba(212,168,71,0.2); border-radius:999px;
+  padding:5px 10px; color:rgba(212,168,71,0.5);
+  cursor:pointer;
+}
+.pending-badge {
+  background:var(--gold); color:var(--brown);
+  font-family:'DM Mono',monospace; font-size:9px; font-weight:700;
+  width:16px; height:16px; border-radius:50%;
+  display:inline-flex; align-items:center; justify-content:center;
+  margin-left:2px;
+}
+.sdot { width:5px; height:5px; border-radius:50%; background:var(--gold); animation:pulse 2s infinite; }
+.sdot.off { background:var(--red); animation:none; }
+@keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.3} }
+
+/* ── UNIT BAR ── */
+.unit-bar {
+  background: var(--brown);
+  padding: 0 16px 12px;
+  display: flex; gap:6px; overflow-x:auto;
+  scrollbar-width:none; flex-shrink:0;
+}
+.unit-bar::-webkit-scrollbar { display:none; }
+.upill {
+  font-family:'DM Mono',monospace; font-size:10px; letter-spacing:1px; text-transform:uppercase;
+  white-space:nowrap; padding:7px 14px; border-radius:999px;
+  border:1px solid rgba(255,255,255,0.15); color:rgba(255,255,255,0.4);
+  background:none; cursor:pointer; transition:all 0.2s; flex-shrink:0;
+}
+.upill.a0 { background:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.45); color:white; }
+.upill.a1 { background:rgba(196,149,106,0.2); border-color:var(--u1); color:var(--u1); }
+.upill.a2 { background:rgba(106,158,106,0.2); border-color:var(--u2); color:var(--u2); }
+.upill.a3 { background:rgba(107,140,174,0.2); border-color:var(--u3); color:var(--u3); }
+
+/* ── SCROLL AREA ── */
+.scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: calc(80px + var(--safe-bottom));
+}
+
+/* ── PANELS ── */
+.panel { display:none; padding:16px; }
+.panel.active { display:block; animation:fadeUp 0.22s ease; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)} }
+
+/* ── STAT GRID ── */
+.stat-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px; }
+.stat-card {
+  background:var(--warm); border:1px solid var(--border);
+  border-radius:14px; padding:14px 15px; position:relative; overflow:hidden;
+}
+.stat-card::before { content:''; position:absolute; top:0;left:0;right:0; height:3px; }
+.sc-rev::before { background:var(--sage); }
+.sc-exp::before { background:var(--red); }
+.sc-pro::before { background:var(--gold); }
+.sc-bk::before { background:var(--tan); }
+.sl { font-family:'DM Mono',monospace; font-size:8px; letter-spacing:2px; text-transform:uppercase; color:rgba(44,24,16,0.38); margin-bottom:6px; }
+.sv { font-family:'Playfair Display',serif; font-size:20px; line-height:1; }
+.sv .c { font-size:10px; font-family:'DM Mono',monospace; opacity:0.4; margin-right:2px; }
+.ss { font-size:10px; color:rgba(44,24,16,0.35); margin-top:4px; }
+
+/* ── UNIT MINI CARDS ── */
+.unit-mini-grid { display:flex; flex-direction:column; gap:10px; margin-bottom:16px; }
+.umc {
+  background:var(--warm); border:1px solid var(--border);
+  border-radius:14px; padding:14px 15px; border-left:3px solid;
+}
+.umc-1 { border-left-color:var(--u1); }
+.umc-2 { border-left-color:var(--u2); }
+.umc-3 { border-left-color:var(--u3); }
+.umc-name { font-family:'Playfair Display',serif; font-size:15px; margin-bottom:10px; }
+.umc-row { display:flex; justify-content:space-between; font-size:12px; padding:3px 0; }
+.umc-k { color:rgba(44,24,16,0.5); }
+.umc-v { font-family:'DM Mono',monospace; font-size:11px; }
+.umc-v.g { color:var(--sage); }
+.umc-v.r { color:var(--red); }
+.umc-hr { border:none; border-top:1px solid var(--border); margin:7px 0; }
+
+/* ── FILTER ROW ── */
+.filter-row { display:flex; gap:8px; align-items:center; margin-bottom:14px; flex-wrap:wrap; }
+.filter-row label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:1.5px; text-transform:uppercase; color:rgba(44,24,16,0.4); }
+.filter-row select {
+  font-family:'DM Mono',monospace; font-size:12px;
+  background:var(--warm); border:1px solid var(--border);
+  border-radius:10px; padding:8px 12px; color:var(--brown);
+  outline:none; -webkit-appearance:none; appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%232C1810' opacity='.3'/%3E%3C/svg%3E");
+  background-repeat:no-repeat; background-position:right 10px center; padding-right:28px;
+}
+
+/* ── SECTION HEADER ── */
+.sh { display:flex; align-items:baseline; justify-content:space-between; margin-bottom:10px; }
+.sh-title { font-family:'Playfair Display',serif; font-size:17px; }
+.sh-count { font-family:'DM Mono',monospace; font-size:10px; color:rgba(44,24,16,0.38); }
+
+/* ── CARDS LIST (bookings) ── */
+.bk-list { display:flex; flex-direction:column; gap:8px; }
+.bk-card {
+  background:var(--warm); border:1px solid var(--border);
+  border-radius:14px; padding:14px 15px;
+  display:flex; flex-direction:column; gap:6px;
+}
+.bk-card-top { display:flex; justify-content:space-between; align-items:flex-start; }
+.bk-guest { font-size:14px; font-weight:500; }
+.bk-dates { font-family:'DM Mono',monospace; font-size:10px; color:rgba(44,24,16,0.45); margin-top:2px; }
+.bk-badge {
+  font-family:'DM Mono',monospace; font-size:8px; letter-spacing:1px; text-transform:uppercase;
+  padding:3px 8px; border-radius:999px; border:1px solid;
+}
+.bb-1 { color:var(--u1); border-color:rgba(196,149,106,0.4); background:rgba(196,149,106,0.08); }
+.bb-2 { color:var(--u2); border-color:rgba(106,158,106,0.4); background:rgba(106,158,106,0.08); }
+.bb-3 { color:var(--u3); border-color:rgba(107,140,174,0.4); background:rgba(107,140,174,0.08); }
+.bk-card-nums { display:flex; gap:12px; padding-top:6px; border-top:1px solid var(--border); }
+.bk-num { display:flex; flex-direction:column; }
+.bk-num-lbl { font-family:'DM Mono',monospace; font-size:8px; letter-spacing:1px; text-transform:uppercase; color:rgba(44,24,16,0.38); margin-bottom:2px; }
+.bk-num-val { font-family:'DM Mono',monospace; font-size:12px; }
+.bk-num-val.g { color:var(--sage); }
+.bk-num-val.r { color:var(--red); }
+.bk-num-val.m { color:var(--mbrown); font-weight:500; }
+.bk-del { font-family:'DM Mono',monospace; font-size:10px; background:none; border:1px solid rgba(199,91,78,0.25); color:var(--red); border-radius:8px; padding:5px 10px; cursor:pointer; }
+
+/* ── ADD FORM ── */
+.add-form {
+  background:var(--warm); border:1px solid var(--border);
+  border-radius:16px; padding:18px; margin-bottom:16px;
+  box-shadow:var(--shadow);
+}
+.add-form h2 { font-family:'Playfair Display',serif; font-size:17px; margin-bottom:15px; }
+.fg { display:flex; flex-direction:column; gap:5px; margin-bottom:12px; }
+.fg label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:1.5px; text-transform:uppercase; color:rgba(44,24,16,0.4); }
+.fg input, .fg select {
+  font-family:'DM Sans',sans-serif; font-size:15px;
+  background:var(--cream); border:1.5px solid var(--border);
+  border-radius:12px; padding:12px 14px; color:var(--brown);
+  outline:none; width:100%;
+  transition:border-color 0.2s, box-shadow 0.2s;
+  -webkit-appearance:none; appearance:none;
+}
+.fg select {
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%232C1810' opacity='.3'/%3E%3C/svg%3E");
+  background-repeat:no-repeat; background-position:right 14px center;
+  background-color:var(--cream); padding-right:36px;
+}
+.fg input:focus, .fg select:focus { border-color:var(--gold); box-shadow:0 0 0 3px rgba(212,168,71,0.12); }
+.fg input.error { border-color:var(--red); box-shadow:0 0 0 3px rgba(199,91,78,0.1); }
+.err-msg { font-family:'DM Mono',monospace; font-size:10px; color:var(--red); margin-top:-8px; margin-bottom:4px; }
+
+/* PREVIEW STRIP */
+.preview-strip {
+  background:rgba(212,168,71,0.07); border:1px solid rgba(212,168,71,0.22);
+  border-radius:12px; padding:12px 14px; margin-bottom:12px;
+  display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:8px;
+}
+.ps-item { display:flex; flex-direction:column; }
+.ps-lbl { font-family:'DM Mono',monospace; font-size:8px; letter-spacing:1px; text-transform:uppercase; color:rgba(44,24,16,0.4); margin-bottom:2px; }
+.ps-val { font-family:'DM Mono',monospace; font-size:12px; color:var(--mbrown); font-weight:500; }
+
+.btn-add {
+  font-family:'DM Mono',monospace; font-size:12px; letter-spacing:2px; text-transform:uppercase;
+  background:var(--brown); color:var(--gold); border:none;
+  border-radius:14px; padding:15px; width:100%; cursor:pointer;
+  transition:opacity 0.2s;
+}
+.btn-add:disabled { opacity:0.5; }
+
+/* ── EXPENSE CARDS ── */
+.exp-card {
+  background:var(--warm); border:1px solid var(--border);
+  border-radius:14px; padding:16px 17px; margin-bottom:12px;
+  box-shadow:var(--shadow);
+}
+.exp-card h3 { font-family:'Playfair Display',serif; font-size:15px; margin-bottom:13px; padding-bottom:10px; border-bottom:1px solid var(--border); }
+.er { display:flex; justify-content:space-between; align-items:center; padding:7px 0; border-bottom:1px solid rgba(44,24,16,0.04); }
+.er:last-child { border-bottom:none; }
+.ek { font-size:13px; color:rgba(44,24,16,0.65); }
+.ek small { display:block; font-size:10px; color:rgba(44,24,16,0.35); font-family:'DM Mono',monospace; margin-top:1px; }
+.ev { font-family:'DM Mono',monospace; font-size:12px; color:var(--red); }
+.et { display:flex; justify-content:space-between; align-items:center; margin-top:11px; padding-top:11px; border-top:2px solid var(--border); }
+.et .l { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:2px; text-transform:uppercase; color:rgba(44,24,16,0.4); }
+.et .a { font-family:'Playfair Display',serif; font-size:20px; }
+.pbar-wrap { margin-top:13px; background:rgba(44,24,16,0.06); border-radius:999px; height:6px; overflow:hidden; }
+.pbar { height:100%; border-radius:999px; background:linear-gradient(90deg,var(--sage),var(--gold)); transition:width 0.6s ease; }
+.pbar-meta { display:flex; justify-content:space-between; margin-top:5px; font-family:'DM Mono',monospace; font-size:9px; color:rgba(44,24,16,0.38); }
+
+/* ── BOTTOM NAV ── */
+.bottom-nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--brown);
+  display: flex;
+  padding: 10px 0 calc(10px + var(--safe-bottom));
+  border-top: 1px solid rgba(255,255,255,0.06);
+  z-index: 100;
+  flex-shrink: 0;
+}
+.nav-btn {
+  flex: 1; display:flex; flex-direction:column; align-items:center; gap:4px;
+  background:none; border:none; cursor:pointer; padding:6px 0;
+  color:rgba(255,255,255,0.35); transition:color 0.2s;
+}
+.nav-btn.active { color:var(--gold); }
+.nav-icon { font-size:20px; line-height:1; }
+.nav-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:1px; text-transform:uppercase; }
+
+/* ── TOAST ── */
+#toast {
+  position:fixed; bottom:calc(80px + var(--safe-bottom) + 10px); left:16px; right:16px;
+  background:var(--brown); color:var(--gold);
+  font-family:'DM Mono',monospace; font-size:12px; letter-spacing:0.5px;
+  padding:13px 18px; border-radius:14px;
+  box-shadow:0 8px 32px rgba(44,24,16,0.3);
+  transform:translateY(20px); opacity:0;
+  transition:all 0.3s; z-index:9999; pointer-events:none;
+  text-align:center;
+}
+#toast.show { transform:translateY(0); opacity:1; }
+#toast.err { background:var(--red); color:white; }
+
+/* ── EMPTY STATE ── */
+.empty { text-align:center; padding:40px 20px; color:rgba(44,24,16,0.3); }
+.empty-icon { font-size:36px; margin-bottom:10px; }
+.empty p { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:1px; line-height:1.8; }
+
+/* ── DESKTOP ADJUSTMENTS ── */
+@media(min-width:640px){
+  .panel { max-width:600px; margin:0 auto; }
+  .stat-grid { grid-template-columns:repeat(4,1fr); }
+  .preview-strip { grid-template-columns:repeat(4,1fr); }
+}
+
+/* ── WHATSAPP MODAL ── */
+#wa-modal {
+  position:fixed; inset:0; background:rgba(44,24,16,0.6);
+  display:flex; align-items:flex-end; z-index:998;
+  backdrop-filter:blur(3px);
+}
+#wa-modal.hidden { display:none; }
+.wa-sheet {
+  background:var(--warm); border-radius:24px 24px 0 0;
+  padding:24px 20px calc(24px + var(--safe-bottom));
+  width:100%; animation:slideUp 0.3s ease;
+}
+@keyframes slideUp { from{transform:translateY(100%)}to{transform:translateY(0)} }
+.wa-header { display:flex; align-items:center; gap:10px; margin-bottom:6px; }
+.wa-icon { font-size:28px; }
+.wa-title { font-family:'Playfair Display',serif; font-size:18px; }
+.wa-sub { font-family:'DM Mono',monospace; font-size:10px; color:rgba(44,24,16,0.4); letter-spacing:1px; margin-bottom:16px; }
+.wa-message-box {
+  background:var(--cream); border:1px solid var(--border);
+  border-radius:14px; padding:14px 15px; margin-bottom:16px;
+  font-size:13px; line-height:1.7; color:var(--brown);
+  white-space:pre-wrap; font-family:'DM Sans',sans-serif;
+  max-height:200px; overflow-y:auto;
+}
+.wa-actions { display:flex; flex-direction:column; gap:8px; }
+.btn-wa {
+  font-family:'DM Mono',monospace; font-size:12px; letter-spacing:2px; text-transform:uppercase;
+  background:#25D366; color:white; border:none;
+  border-radius:14px; padding:15px; width:100%; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+}
+.btn-wa:hover { background:#1ebe5d; }
+.btn-wa-skip {
+  font-family:'DM Mono',monospace; font-size:11px; letter-spacing:1px;
+  background:none; border:1px solid var(--border); color:rgba(44,24,16,0.45);
+  border-radius:14px; padding:13px; width:100%; cursor:pointer;
+}
+</style>
+</head>
+<body>
+
+<div id="lbar"></div>
+
+<!-- SETUP BOTTOM SHEET -->
+<div id="setup-overlay">
+  <div class="setup-sheet">
+    <h2>Connect Database</h2>
+    <p class="setup-sub">One-time setup · ~3 minutes</p>
+    <div class="setup-steps">
+      <div class="setup-step"><div class="step-n">1</div><div class="step-t"><strong>Open Google Apps Script</strong>Go to <a href="https://script.google.com" target="_blank">script.google.com</a> → <code>+ New project</code></div></div>
+      <div class="setup-step"><div class="step-n">2</div><div class="step-t"><strong>Paste the backend code</strong>Delete everything, paste the full <code>apps-script.gs</code> file</div></div>
+      <div class="setup-step"><div class="step-n">3</div><div class="step-t"><strong>Deploy as Web App</strong><code>Deploy → New deployment</code> → Web app → Execute as: <em>Me</em> → Access: <em>Anyone</em> → Deploy → Authorise</div></div>
+      <div class="setup-step"><div class="step-n">4</div><div class="step-t"><strong>Copy the URL ending in /exec and paste below</strong></div></div>
+    </div>
+    <label class="setup-label">Apps Script Web App URL</label>
+    <input class="setup-input" type="url" id="url-input" placeholder="https://script.google.com/macros/s/.../exec" onkeydown="if(event.key==='Enter') saveUrl()">
+    <div id="url-error" style="display:none;font-family:DM Mono,monospace;font-size:11px;color:#C75B4E;margin-bottom:8px;">Please paste the correct URL ending in /exec</div>
+    <button class="btn-connect" onclick="saveUrl()">Connect & Start →</button>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="logo-wrap">
+    <div class="logo-name">Birnes Haven</div>
+    <div class="logo-sub">BnB Manager</div>
+  </div>
+  <div class="sync-pill" onclick="resetSetup()">
+    <span class="sdot" id="sdot"></span>
+    <span id="slbl">Synced</span>
+    <span class="pending-badge" id="pending-badge" style="display:none">0</span>
+  </div>
+</header>
+
+<!-- UNIT BAR -->
+<div class="unit-bar">
+  <button class="upill a0" data-u="0" onclick="setUnit(this)">All Units</button>
+  <button class="upill" data-u="1" onclick="setUnit(this)">🏠 Studio</button>
+  <button class="upill" data-u="2" onclick="setUnit(this)">🛏 1BR Tsavo</button>
+  <button class="upill" data-u="3" onclick="setUnit(this)">🛏 2BR Riiri</button>
+</div>
+
+<!-- SCROLL AREA -->
+<div class="scroll-area">
+
+  <!-- DASHBOARD -->
+  <div id="p-dashboard" class="panel active">
+    <div class="stat-grid">
+      <div class="stat-card sc-rev"><div class="sl">Revenue</div><div class="sv"><span class="c">KSh</span><span id="d-rev">0</span></div><div class="ss" id="d-period">—</div></div>
+      <div class="stat-card sc-exp"><div class="sl">Expenses</div><div class="sv"><span class="c">KSh</span><span id="d-exp">0</span></div><div class="ss">Fixed + cleaning</div></div>
+      <div class="stat-card sc-pro"><div class="sl">Net Profit</div><div class="sv"><span class="c">KSh</span><span id="d-pro">0</span></div><div class="ss" id="d-pro-sub">—</div></div>
+      <div class="stat-card sc-bk"><div class="sl">Bookings</div><div class="sv"><span id="d-bk">0</span></div><div class="ss" id="d-bk-sub">—</div></div>
+    </div>
+
+    <div id="unit-mini-wrap">
+      <div class="sh"><span class="sh-title">Per Unit</span><span class="sh-count" id="umc-period">—</span></div>
+      <div class="unit-mini-grid" id="umc-grid"></div>
+    </div>
+
+    <div class="filter-row" style="margin-top:12px">
+      <label>Month</label><select id="d-month" onchange="renderDash()"></select>
+      <label>Year</label><select id="d-year" onchange="renderDash()"></select>
+    </div>
+
+    <div class="sh"><span class="sh-title">Recent Bookings</span><span class="sh-count" id="d-bk-lbl">—</span></div>
+    <div class="bk-list" id="d-bk-list"></div>
+  </div>
+
+  <!-- BOOKINGS -->
+  <div id="p-bookings" class="panel">
+    <div class="add-form">
+      <h2>New Booking</h2>
+
+      <div class="fg">
+        <label>Unit</label>
+        <select id="f-unit">
+          <option value="1">🏠 Studio</option>
+          <option value="2">🛏 1 Bedroom Tsavo</option>
+          <option value="3">🛏 2 Bedroom Riiri</option>
+        </select>
+      </div>
+
+      <div class="fg">
+        <label>Guest Name</label>
+        <input type="text" id="f-guest" placeholder="e.g. Jane Wanjiku" autocomplete="name">
+      </div>
+
+      <div class="fg">
+        <label>Check-in Date</label>
+        <input type="date" id="f-in" onchange="onCheckinChange()">
+      </div>
+
+      <div class="fg">
+        <label>Check-out Date</label>
+        <input type="date" id="f-out" onchange="onCheckoutChange()">
+        <span class="err-msg" id="date-err" style="display:none">Check-out must be after check-in</span>
+      </div>
+
+      <div class="fg">
+        <label>Rate per Night (KSh)</label>
+        <input type="number" id="f-rate" placeholder="e.g. 3000" inputmode="numeric" oninput="calcPreview()">
+      </div>
+
+      <div class="fg">
+        <label>Payment Method</label>
+        <select id="f-pay">
+          <option>M-Pesa</option><option>Cash</option>
+          <option>Bank Transfer</option><option>Airbnb</option><option>Booking.com</option>
+        </select>
+      </div>
+
+      <div class="fg">
+        <label>Notes (optional)</label>
+        <input type="text" id="f-notes" placeholder="Any extra info">
+      </div>
+
+      <div class="preview-strip" id="preview" style="display:none">
+        <div class="ps-item"><div class="ps-lbl">Nights</div><div class="ps-val" id="p-n">—</div></div>
+        <div class="ps-item"><div class="ps-lbl">Revenue</div><div class="ps-val" id="p-r">—</div></div>
+        <div class="ps-item"><div class="ps-lbl">Cleaning</div><div class="ps-val" id="p-cl">—</div></div>
+        <div class="ps-item"><div class="ps-lbl">Net</div><div class="ps-val" id="p-net">—</div></div>
+      </div>
+
+      <button class="btn-add" id="add-btn" onclick="addBooking()">+ Add Booking</button>
+    </div>
+
+    <div class="filter-row">
+      <label>Unit</label>
+      <select id="bk-filter" onchange="renderBookings()">
+        <option value="0">All Units</option>
+        <option value="1">Studio</option>
+        <option value="2">1BR Tsavo</option>
+        <option value="3">2BR Riiri</option>
+      </select>
+    </div>
+
+    <div class="sh"><span class="sh-title">All Bookings</span><span class="sh-count" id="bk-count">—</span></div>
+    <div class="bk-list" id="bk-list"></div>
+  </div>
+
+  <!-- EXPENSES -->
+  <div id="p-expenses" class="panel">
+    <div class="filter-row">
+      <label>Month</label><select id="e-month" onchange="renderExpenses()"></select>
+      <label>Year</label><select id="e-year" onchange="renderExpenses()"></select>
+    </div>
+
+    <!-- per-unit mini cards -->
+    <div class="unit-mini-grid" id="exp-umc" style="margin-bottom:14px"></div>
+
+    <!-- fixed costs -->
+    <div class="exp-card">
+      <h3>Fixed Monthly Costs</h3>
+      <div class="er"><div class="ek">Studio<small>Rent 14,000 · WiFi 2,000 · Util 3,000</small></div><div class="ev">KSh 19,000</div></div>
+      <div class="er"><div class="ek">1 Bedroom Tsavo<small>Rent 21,500 · WiFi 3,000 · Util 3,000</small></div><div class="ev">KSh 27,500</div></div>
+      <div class="er"><div class="ek">2 Bedroom Riiri<small>Rent 35,000 · WiFi 1,800 · Util 3,000</small></div><div class="ev">KSh 39,800</div></div>
+      <div class="et"><span class="l">Total Fixed</span><span class="a">KSh 86,300</span></div>
+    </div>
+
+    <!-- variable -->
+    <div class="exp-card">
+      <h3>Cleaning Fees <span id="e-period" style="font-size:11px;font-family:'DM Mono',monospace;color:rgba(44,24,16,0.38);"></span></h3>
+      <div class="er"><div class="ek">Studio<small>KSh 300 × <span id="e-bk1">0</span> nights</small></div><div class="ev" id="e-cl1">KSh 0</div></div>
+      <div class="er"><div class="ek">1 Bedroom Tsavo<small>KSh 300 × <span id="e-bk2">0</span> nights</small></div><div class="ev" id="e-cl2">KSh 0</div></div>
+      <div class="er"><div class="ek">2 Bedroom Riiri<small>KSh 300 × <span id="e-bk3">0</span> nights</small></div><div class="ev" id="e-cl3">KSh 0</div></div>
+      <div class="et"><span class="l">Total Variable</span><span class="a" id="e-var-total">KSh 0</span></div>
+    </div>
+
+    <!-- P&L summary -->
+    <div class="exp-card">
+      <h3>P&amp;L Summary</h3>
+      <div class="er"><div class="ek">Total Revenue</div><div class="ev" style="color:var(--sage)" id="e-rev">KSh 0</div></div>
+      <div class="er"><div class="ek">Fixed Expenses</div><div class="ev">KSh 86,300</div></div>
+      <div class="er"><div class="ek">Variable (Cleaning)</div><div class="ev" id="e-var2">KSh 0</div></div>
+      <div class="er"><div class="ek"><strong>Total Expenses</strong></div><div class="ev" id="e-total"><strong>KSh 86,300</strong></div></div>
+      <div class="et"><span class="l">Net Profit</span><span class="a" id="e-profit">KSh 0</span></div>
+      <div class="pbar-wrap"><div class="pbar" id="pbar" style="width:0%"></div></div>
+      <div class="pbar-meta"><span>Expenses</span><span id="pbar-pct">—</span><span>Revenue</span></div>
+    </div>
+  </div>
+
+</div><!-- end scroll area -->
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="nav-btn active" data-p="dashboard" onclick="switchTab(this)">
+    <span class="nav-icon">📊</span>
+    <span class="nav-label">Dashboard</span>
+  </button>
+  <button class="nav-btn" data-p="bookings" onclick="switchTab(this)">
+    <span class="nav-icon">➕</span>
+    <span class="nav-label">Bookings</span>
+  </button>
+  <button class="nav-btn" data-p="expenses" onclick="switchTab(this)">
+    <span class="nav-icon">💰</span>
+    <span class="nav-label">Expenses</span>
+  </button>
+</nav>
+
+
+<!-- WHATSAPP MODAL -->
+<div id="wa-modal" class="hidden">
+  <div class="wa-sheet">
+    <div class="wa-header">
+      <span class="wa-icon">🧹</span>
+      <span class="wa-title">Notify Your Cleaner</span>
+    </div>
+    <div class="wa-sub">Send cleaning instructions via WhatsApp</div>
+    <div class="wa-message-box" id="wa-message"></div>
+    <div class="wa-actions">
+      <button class="btn-wa" onclick="sendWhatsApp()">
+        <span>📲</span> Open WhatsApp
+      </button>
+      <button class="btn-wa-skip" onclick="closeWaModal()">Skip for now</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ===== CONFIG =====
+const UNITS = {
+  1: { name:'Studio',          short:'Studio',   fixed:19000 },
+  2: { name:'1 Bedroom Tsavo', short:'1BR Tsavo',fixed:27500 },
+  3: { name:'2 Bedroom Riiri', short:'2BR Riiri',fixed:39800 },
+};
+const ALL_FIXED = 86300;
+const CLEANING_PER_NIGHT = 300; // KSh 300 per night
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+let bookings   = [];
+let scriptUrl  = localStorage.getItem('bh_url') || '';
+let activeUnit = 0;
+let isSyncing  = false;
+
+// ===== OFFLINE QUEUE =====
+function getQueue() {
+  return JSON.parse(localStorage.getItem('bh_queue') || '[]');
+}
+function saveQueue(q) {
+  localStorage.setItem('bh_queue', JSON.stringify(q));
+  updatePendingBadge();
+}
+function enqueue(action, data) {
+  const q = getQueue();
+  q.push({ action, data, timestamp: Date.now() });
+  saveQueue(q);
+}
+function updatePendingBadge() {
+  const q = getQueue();
+  const badge = document.getElementById('pending-badge');
+  const slbl  = document.getElementById('slbl');
+  if (q.length > 0) {
+    badge.textContent = q.length;
+    badge.style.display = 'inline-flex';
+    slbl.textContent = 'Pending';
+    document.getElementById('sdot').className = 'sdot';
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
+async function syncQueue() {
+  const q = getQueue();
+  if (!q.length || isSyncing || !scriptUrl) return;
+  isSyncing = true;
+  setLoading(true);
+
+  let failed = [];
+  for (const item of q) {
+    try {
+      await api(item.action, item.data);
+    } catch(e) {
+      failed.push(item); // keep failed ones in queue
+    }
+  }
+
+  saveQueue(failed);
+  isSyncing = false;
+  setLoading(false);
+
+  if (failed.length === 0 && q.length > 0) {
+    toast('✓ ' + q.length + ' pending booking' + (q.length > 1 ? 's' : '') + ' synced to Google Sheets');
+    setSync(true);
+    // Reload fresh data from sheet
+    await loadData();
+  } else if (failed.length > 0) {
+    toast(failed.length + ' item(s) still pending — will retry when online', true);
+  }
+}
+
+// Listen for when device comes back online
+window.addEventListener('online', () => {
+  toast('Back online — syncing…');
+  syncQueue();
+});
+window.addEventListener('offline', () => {
+  setSync(false);
+  toast('You are offline — bookings will be saved locally', true);
+});
+// ===== INIT =====
+function init() {
+  fillFilters();
+  if (scriptUrl) {
+    document.getElementById('setup-overlay').classList.add('hidden');
+    loadData();
+  }
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  }
+  updatePendingBadge();
+  // Try to sync any pending items on startup
+  if (navigator.onLine) syncQueue();
+
+  // Auto-refresh data when user returns to the app
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && navigator.onLine && scriptUrl) {
+      loadData();
+    }
+  });
+
+  // Also refresh when app gains focus on mobile
+  window.addEventListener('focus', () => {
+    if (navigator.onLine && scriptUrl) loadData();
+  });
+}
+
+function fillFilters() {
+  const now = new Date(), cm = now.getMonth(), cy = now.getFullYear();
+  const years = [cy-1, cy, cy+1];
+  ['d-month','e-month'].forEach(id => {
+    const s = document.getElementById(id);
+    MONTHS.forEach((m,i) => {
+      const o = document.createElement('option');
+      o.value=i; o.textContent=m; if(i===cm) o.selected=true;
+      s.appendChild(o);
+    });
+  });
+  ['d-year','e-year'].forEach(id => {
+    const s = document.getElementById(id);
+    years.forEach(y => {
+      const o = document.createElement('option');
+      o.value=y; o.textContent=y; if(y===cy) o.selected=true;
+      s.appendChild(o);
+    });
+  });
+}
+
+// ===== SETUP =====
+function saveUrl() {
+  const v = document.getElementById('url-input').value.trim();
+  if (!v || !v.includes('script.google.com')) {
+    document.getElementById('url-error').style.display = 'block';
+    return;
+  }
+  document.getElementById('url-error').style.display = 'none';
+  scriptUrl = v;
+  localStorage.setItem('bh_url', scriptUrl);
+  document.getElementById('setup-overlay').classList.add('hidden');
+  loadData();
+}
+function resetSetup() {
+  if (!confirm('Reconnect to a different database URL?')) return;
+  localStorage.removeItem('bh_url'); scriptUrl = '';
+  document.getElementById('setup-overlay').classList.remove('hidden');
+}
+
+// ===== API =====
+function setLoading(on) { document.getElementById('lbar').classList.toggle('on', on); }
+function setSync(ok) {
+  const q = getQueue();
+  document.getElementById('sdot').className = 'sdot' + (ok ? '' : ' off');
+  if (!ok) {
+    document.getElementById('slbl').textContent = 'Offline';
+  } else if (q.length === 0) {
+    document.getElementById('slbl').textContent = 'Synced';
+  }
+  updatePendingBadge();
+}
+async function api(action, data = {}) {
+  const url = new URL(scriptUrl);
+  url.searchParams.set('action', action);
+  Object.entries(data).forEach(([k,v]) => url.searchParams.set(k, v));
+  const r = await fetch(url.toString(), { redirect: 'follow' });
+  if (!r.ok) throw new Error('Network error');
+  return r.json();
+}
+const UNIT_NAME_MAP = {
+  'Studio': 1,
+  '1 Bedroom Tsavo': 2,
+  '2 Bedroom Riiri': 3
+};
+
+function normaliseBookings(list) {
+  return list.map(b => {
+    // If unit is a name string, convert to number
+    if (typeof b.unit === 'string' && isNaN(Number(b.unit))) {
+      b.unit = UNIT_NAME_MAP[b.unit] || b.unit;
+    } else {
+      b.unit = Number(b.unit);
+    }
+    b.revenue  = Number(b.revenue);
+    b.cleaning = Number(b.cleaning);
+    b.net      = Number(b.net);
+    b.nights   = Number(b.nights);
+    return b;
+  });
+}
+
+async function loadData() {
+  setLoading(true);
+  try {
+    const d = await api('getAll');
+    bookings = normaliseBookings(d.bookings || []);
+    localStorage.setItem('bh_cache', JSON.stringify(bookings));
+    setSync(true);
+  } catch(e) {
+    setSync(false);
+    toast('Offline — showing cached data', true);
+    bookings = normaliseBookings(JSON.parse(localStorage.getItem('bh_cache') || '[]'));
+  }
+  renderAll();
+  setLoading(false);
+}
+
+// ===== UNIT SELECTOR =====
+function setUnit(btn) {
+  document.querySelectorAll('.upill').forEach(p => p.className = 'upill');
+  activeUnit = parseInt(btn.dataset.u);
+  btn.classList.add('a' + activeUnit);
+  document.getElementById('unit-mini-wrap').style.display = activeUnit === 0 ? 'block' : 'none';
+  renderAll();
+}
+
+// ===== TABS =====
+function switchTab(btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('p-' + btn.dataset.p).classList.add('active');
+  if (btn.dataset.p === 'expenses') renderExpenses();
+}
+
+// ===== DATE VALIDATION =====
+function onCheckinChange() {
+  const inVal = document.getElementById('f-in').value;
+  const outEl = document.getElementById('f-out');
+
+  if (inVal) {
+    // Set the minimum checkout date to the day after check-in
+    const minOut = new Date(inVal);
+    minOut.setDate(minOut.getDate() + 1);
+    outEl.min = minOut.toISOString().split('T')[0];
+
+    // If current checkout is now invalid, clear it
+    if (outEl.value && outEl.value <= inVal) {
+      outEl.value = '';
+      document.getElementById('date-err').style.display = 'none';
+      document.getElementById('preview').style.display = 'none';
+    }
+  }
+  calcPreview();
+}
+
+function onCheckoutChange() {
+  const inVal  = document.getElementById('f-in').value;
+  const outVal = document.getElementById('f-out').value;
+  const errEl  = document.getElementById('date-err');
+  const outEl  = document.getElementById('f-out');
+
+  if (inVal && outVal && outVal <= inVal) {
+    outEl.classList.add('error');
+    errEl.style.display = 'block';
+    document.getElementById('preview').style.display = 'none';
+    return;
+  }
+  outEl.classList.remove('error');
+  errEl.style.display = 'none';
+  calcPreview();
+}
+
+// ===== PREVIEW =====
+function calcPreview() {
+  const ci   = document.getElementById('f-in').value;
+  const co   = document.getElementById('f-out').value;
+  const rate = parseFloat(document.getElementById('f-rate').value) || 0;
+  const prev = document.getElementById('preview');
+  if (!ci || !co || !rate || co <= ci) { prev.style.display = 'none'; return; }
+  const nights = Math.round((new Date(co) - new Date(ci)) / 86400000);
+  if (nights <= 0) { prev.style.display = 'none'; return; }
+  const rev = nights * rate;
+  document.getElementById('p-n').textContent   = nights + ' night' + (nights > 1 ? 's' : '');
+  document.getElementById('p-r').textContent   = fmtK(rev);
+  document.getElementById('p-net').textContent = fmtK(rev - CLEANING);
+  prev.style.display = 'grid';
+}
+
+// ===== ADD BOOKING =====
+async function addBooking() {
+  const unit    = parseInt(document.getElementById('f-unit').value);
+  const guest   = document.getElementById('f-guest').value.trim();
+  const checkin = document.getElementById('f-in').value;
+  const checkout= document.getElementById('f-out').value;
+  const rate    = parseFloat(document.getElementById('f-rate').value);
+  const payment = document.getElementById('f-pay').value;
+  const notes   = document.getElementById('f-notes').value.trim();
+
+  if (!guest || !checkin || !checkout || !rate) { toast('Please fill in all required fields', true); return; }
+  if (checkout <= checkin) { toast('Check-out must be after check-in', true); return; }
+
+  const nights = Math.round((new Date(checkout) - new Date(checkin)) / 86400000);
+  const cleaning = nights * CLEANING_PER_NIGHT;
+  const bk = { id:Date.now(), unit, guest, checkin, checkout, nights, rate, revenue:nights*rate, cleaning:cleaning, net:(nights*rate)-cleaning, payment, notes, createdAt:new Date().toISOString() };
+
+  const btn = document.getElementById('add-btn');
+  btn.disabled = true; btn.textContent = 'Saving…'; setLoading(true);
+
+  try {
+    if (navigator.onLine) {
+      await api('addBooking', bk);
+      toast('Booking saved to Google Sheets ✓'); setTimeout(() => openWhatsApp(bk), 800);
+    } else {
+      enqueue('addBooking', bk);
+      toast('Saved locally — will sync when online'); if(Number(bk.unit)===1||Number(bk.unit)===2){ setTimeout(()=>{ toast('Opening WhatsApp…'); setTimeout(()=>openWhatsApp(bk),600); },800); }
+    }
+    bookings.push(bk);
+    localStorage.setItem('bh_cache', JSON.stringify(bookings));
+    ['f-guest','f-in','f-out','f-rate','f-notes'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('f-out').min = '';
+    document.getElementById('f-out').classList.remove('error');
+    document.getElementById('date-err').style.display = 'none';
+    document.getElementById('preview').style.display = 'none';
+    renderAll();
+  } catch(e) {
+    // API failed even though navigator.onLine — treat as offline
+    enqueue('addBooking', bk);
+    bookings.push(bk);
+    localStorage.setItem('bh_cache', JSON.stringify(bookings));
+    toast('Saved locally — will sync when online'); if(Number(bk.unit)===1||Number(bk.unit)===2){ setTimeout(()=>{ toast('Opening WhatsApp…'); setTimeout(()=>openWhatsApp(bk),600); },800); }
+    ['f-guest','f-in','f-out','f-rate','f-notes'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('f-out').min = '';
+    document.getElementById('preview').style.display = 'none';
+    renderAll();
+  }
+
+  btn.disabled = false; btn.textContent = '+ Add Booking'; setLoading(false);
+}
+
+// ===== DELETE =====
+async function deleteBooking(id) {
+  if (!confirm('Delete this booking?')) return;
+  setLoading(true);
+  try {
+    if (navigator.onLine) {
+      await api('deleteBooking', { id });
+      toast('Booking deleted');
+    } else {
+      enqueue('deleteBooking', { id });
+      toast('Offline — deletion queued, will sync when online');
+    }
+    bookings = bookings.filter(b => b.id != id);
+    localStorage.setItem('bh_cache', JSON.stringify(bookings));
+    renderAll(); renderExpenses();
+  } catch(e) {
+    enqueue('deleteBooking', { id });
+    bookings = bookings.filter(b => b.id != id);
+    localStorage.setItem('bh_cache', JSON.stringify(bookings));
+    toast('Could not reach server — deletion queued for sync');
+    renderAll(); renderExpenses();
+  }
+  setLoading(false);
+}
+
+// ===== HELPERS =====
+function fmtK(n) { return 'KSh ' + Number(n).toLocaleString(); }
+function fmtDate(s) {
+  if (!s) return '—';
+  let d;
+
+  // Already a Date object
+  if (s instanceof Date) {
+    d = s;
+  }
+  // ISO format: YYYY-MM-DD
+  else if (typeof s === 'string' && /^\d{4}-\d{2}-\d{2}/.test(s)) {
+    d = new Date(s.substring(0, 10) + 'T12:00:00');
+  }
+  // DD/MM/YYYY or D/M/YYYY
+  else if (typeof s === 'string' && /^\d{1,2}\/\d{1,2}\/\d{4}/.test(s)) {
+    const parts = s.split('/');
+    d = new Date(parts[2] + '-' + parts[1].padStart(2,'0') + '-' + parts[0].padStart(2,'0') + 'T12:00:00');
+  }
+  // MM/DD/YYYY (Google Sheets US format)
+  else if (typeof s === 'string' && /^\d{1,2}-\d{1,2}-\d{4}/.test(s)) {
+    const parts = s.split('-');
+    d = new Date(parts[2] + '-' + parts[0].padStart(2,'0') + '-' + parts[1].padStart(2,'0') + 'T12:00:00');
+  }
+  // Numeric (Google Sheets serial date)
+  else if (!isNaN(Number(s))) {
+    // Google Sheets date serial: days since Dec 30 1899
+    d = new Date((Number(s) - 25569) * 86400000);
+  }
+  // Fallback: try native parse
+  else {
+    d = new Date(s);
+  }
+
+  if (isNaN(d)) return String(s);
+  return d.toLocaleDateString('en-KE', { day:'2-digit', month:'short', year:'numeric' });
+}
+function byMonth(list, m, y) {
+  return list.filter(b => { const d = new Date(b.checkin); return d.getMonth()==m && d.getFullYear()==y; });
+}
+function byUnit(list, u) { return u === 0 ? list : list.filter(b => Number(b.unit) === u); }
+function badge(u) { return `<span class="bk-badge bb-${u}">${UNITS[u]?.short||u}</span>`; }
+
+function renderAll() { renderDash(); renderBookings(); }
+
+// ===== DASHBOARD =====
+function renderDash() {
+  const m = parseInt(document.getElementById('d-month').value);
+  const y = parseInt(document.getElementById('d-year').value);
+  const monthly = byMonth(bookings, m, y);
+  const view    = byUnit(monthly, activeUnit);
+  const fixed   = activeUnit === 0 ? ALL_FIXED : UNITS[activeUnit].fixed;
+  const rev     = view.reduce((s,b) => s+Number(b.revenue), 0);
+  const cl      = view.reduce((s,b) => s+Number(b.cleaning), 0);
+  const exp     = fixed + cl;
+  const profit  = rev - exp;
+
+  document.getElementById('d-rev').textContent = rev.toLocaleString();
+  document.getElementById('d-exp').textContent = exp.toLocaleString();
+  document.getElementById('d-pro').textContent = profit.toLocaleString();
+  document.getElementById('d-bk').textContent  = view.length;
+  document.getElementById('d-period').textContent = MONTHS[m] + ' ' + y + (activeUnit ? ' · ' + UNITS[activeUnit].short : '');
+  document.getElementById('d-bk-sub').textContent = MONTHS[m] + ' ' + y;
+  document.getElementById('d-pro-sub').textContent = profit >= 0 ? 'Profitable ↑' : 'Loss ↓';
+  document.getElementById('d-pro').parentElement.style.color = profit >= 0 ? 'var(--sage)' : 'var(--red)';
+
+  // Per-unit mini cards
+  if (activeUnit === 0) {
+    document.getElementById('umc-period').textContent = MONTHS[m] + ' ' + y;
+    const grid = document.getElementById('umc-grid');
+    grid.innerHTML = [1,2,3].map(u => {
+      const ub   = monthly.filter(b => Number(b.unit) === u);
+      const urev = ub.reduce((s,b) => s+Number(b.revenue), 0);
+      const ucl  = ub.reduce((s,b) => s+Number(b.cleaning), 0);
+      const upro = urev - UNITS[u].fixed - ucl;
+      return `<div class="umc umc-${u}">
+        <div class="umc-name">${u===1?'🏠':'🛏'} ${UNITS[u].name}</div>
+        <div class="umc-row"><span class="umc-k">Revenue</span><span class="umc-v g">${fmtK(urev)}</span></div>
+        <div class="umc-row"><span class="umc-k">Bookings</span><span class="umc-v">${ub.length}</span></div>
+        <hr class="umc-hr">
+        <div class="umc-row"><span class="umc-k">Fixed costs</span><span class="umc-v r">${fmtK(UNITS[u].fixed)}</span></div>
+        <div class="umc-row"><span class="umc-k">Cleaning</span><span class="umc-v r">${fmtK(ucl)}</span></div>
+        <div class="umc-row"><span class="umc-k">Net Profit</span><span class="umc-v" style="color:${upro>=0?'var(--sage)':'var(--red)'}">${fmtK(upro)}</span></div>
+      </div>`;
+    }).join('');
+  }
+
+  // Recent bookings list
+  const sorted = [...view].sort((a,b) => new Date(b.checkin)-new Date(a.checkin));
+  document.getElementById('d-bk-lbl').textContent = sorted.length + ' booking' + (sorted.length!==1?'s':'') + ' · ' + MONTHS[m];
+  const list = document.getElementById('d-bk-list');
+  if (!sorted.length) {
+    list.innerHTML = `<div class="empty"><div class="empty-icon">📅</div><p>No bookings this month</p></div>`;
+    return;
+  }
+  list.innerHTML = sorted.map(b => `
+    <div class="bk-card">
+      <div class="bk-card-top">
+        <div><div class="bk-guest">${b.guest}</div><div class="bk-dates">${fmtDate(b.checkin)} → ${fmtDate(b.checkout)} · ${b.nights}n</div></div>
+        ${badge(b.unit)}
+      </div>
+      <div class="bk-card-nums">
+        <div class="bk-num"><div class="bk-num-lbl">Revenue</div><div class="bk-num-val g">${fmtK(b.revenue)}</div></div>
+        <div class="bk-num"><div class="bk-num-lbl">Cleaning</div><div class="bk-num-val r">${fmtK(b.cleaning)}</div></div>
+        <div class="bk-num"><div class="bk-num-lbl">Net</div><div class="bk-num-val m">${fmtK(b.net)}</div></div>
+      </div>
+    </div>`).join('');
+}
+
+// ===== BOOKINGS LIST =====
+function renderBookings() {
+  const uf = parseInt(document.getElementById('bk-filter').value);
+  const view = byUnit(bookings, uf);
+  const sorted = [...view].sort((a,b) => new Date(b.checkin)-new Date(a.checkin));
+  document.getElementById('bk-count').textContent = view.length + ' total';
+  const list = document.getElementById('bk-list');
+  if (!sorted.length) {
+    list.innerHTML = `<div class="empty"><div class="empty-icon">🏡</div><p>No bookings yet.<br>Add your first one above.</p></div>`;
+    return;
+  }
+  list.innerHTML = sorted.map(b => `
+    <div class="bk-card">
+      <div class="bk-card-top">
+        <div><div class="bk-guest">${b.guest}</div><div class="bk-dates">${fmtDate(b.checkin)} → ${fmtDate(b.checkout)} · ${b.nights}n · ${b.payment}</div></div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">${badge(b.unit)}<button class="bk-del" onclick="deleteBooking(${b.id})">✕</button></div>
+      </div>
+      <div class="bk-card-nums">
+        <div class="bk-num"><div class="bk-num-lbl">Revenue</div><div class="bk-num-val g">${fmtK(b.revenue)}</div></div>
+        <div class="bk-num"><div class="bk-num-lbl">Cleaning</div><div class="bk-num-val r">${fmtK(b.cleaning)}</div></div>
+        <div class="bk-num"><div class="bk-num-lbl">Net</div><div class="bk-num-val m">${fmtK(b.net)}</div></div>
+      </div>
+    </div>`).join('');
+}
+
+// ===== EXPENSES =====
+function renderExpenses() {
+  const m = parseInt(document.getElementById('e-month').value);
+  const y = parseInt(document.getElementById('e-year').value);
+  const monthly = byMonth(bookings, m, y);
+  document.getElementById('e-period').textContent = MONTHS[m] + ' ' + y;
+
+  let totalCl = 0, totalRev = 0;
+  [1,2,3].forEach(u => {
+    const ub = monthly.filter(b => Number(b.unit) === u);
+    const cl = ub.reduce((s,b) => s+Number(b.cleaning), 0);
+    const rv = ub.reduce((s,b) => s+Number(b.revenue), 0);
+    const totalNights = ub.reduce((s,b) => s+Number(b.nights), 0);
+    totalCl += cl; totalRev += rv;
+    document.getElementById('e-bk'+u).textContent = totalNights;
+    document.getElementById('e-cl'+u).textContent = fmtK(cl);
+  });
+
+  const totalExp = ALL_FIXED + totalCl;
+  const profit   = totalRev - totalExp;
+  const pct      = totalRev > 0 ? Math.round((profit/totalRev)*100) : 0;
+
+  document.getElementById('e-var-total').textContent = fmtK(totalCl);
+  document.getElementById('e-rev').textContent       = fmtK(totalRev);
+  document.getElementById('e-var2').textContent      = fmtK(totalCl);
+  document.getElementById('e-total').innerHTML       = '<strong>' + fmtK(totalExp) + '</strong>';
+  const pp = document.getElementById('e-profit');
+  pp.textContent = fmtK(profit);
+  pp.style.color = profit >= 0 ? 'var(--sage)' : 'var(--red)';
+  document.getElementById('pbar').style.width = totalRev > 0 ? Math.max(0,Math.min(100,pct)) + '%' : '0%';
+  document.getElementById('pbar-pct').textContent = totalRev > 0 ? 'Margin: ' + pct + '%' : 'No revenue';
+
+  // Per-unit expense cards
+  document.getElementById('exp-umc').innerHTML = [1,2,3].map(u => {
+    const ub   = monthly.filter(b => Number(b.unit) === u);
+    const urev = ub.reduce((s,b) => s+Number(b.revenue), 0);
+    const ucl  = ub.reduce((s,b) => s+Number(b.cleaning), 0);
+    const upro = urev - UNITS[u].fixed - ucl;
+    return `<div class="umc umc-${u}">
+      <div class="umc-name">${u===1?'🏠':'🛏'} ${UNITS[u].name}</div>
+      <div class="umc-row"><span class="umc-k">Revenue</span><span class="umc-v g">${fmtK(urev)}</span></div>
+      <div class="umc-row"><span class="umc-k">Bookings</span><span class="umc-v">${ub.length}</span></div>
+      <hr class="umc-hr">
+      <div class="umc-row"><span class="umc-k">Fixed</span><span class="umc-v r">${fmtK(UNITS[u].fixed)}</span></div>
+      <div class="umc-row"><span class="umc-k">Cleaning</span><span class="umc-v r">${fmtK(ucl)}</span></div>
+      <div class="umc-row"><span class="umc-k">Net Profit</span><span class="umc-v" style="color:${upro>=0?'var(--sage)':'var(--red)'}">${fmtK(upro)}</span></div>
+    </div>`;
+  }).join('');
+}
+
+
+// ===== WHATSAPP =====
+const CLEANER_NUMBER = '254701389675';
+let waMessage = '';
+
+function openWhatsApp(bk) {
+  // Only prompt for Studio (1) and 1 Bedroom Tsavo (2)
+  if (Number(bk.unit) !== 1 && Number(bk.unit) !== 2) return;
+  const msg = buildCleaningMessage(bk);
+  const encoded = encodeURIComponent(msg);
+  toast('Opening WhatsApp…');
+  setTimeout(() => {
+    const a = document.createElement('a');
+    a.href = 'https://wa.me/' + CLEANER_NUMBER + '?text=' + encoded;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }, 600);
+}
+
+function buildCleaningMessage(bk) {
+  const unitName = UNITS[bk.unit]?.name || 'the unit';
+  return `Hello.
+I had a booking in the ${unitName}.
+Please ensure the unit is fully cleaned.
+✅ Bedding changed & fresh towels
+✅ Bathroom scrubbed & Tissue/Shower Gel added
+✅ Kitchen cleaned & dishes done
+✅ Rubbish removed
+✅ Windows & surfaces wiped`;
+}
+
+function showWaModal(bk) {
+  waMessage = buildCleaningMessage(bk);
+  document.getElementById('wa-message').textContent = waMessage;
+  document.getElementById('wa-modal').classList.remove('hidden');
+}
+
+function closeWaModal() {
+  document.getElementById('wa-modal').classList.add('hidden');
+  waMessage = '';
+}
+
+function sendWhatsApp() {
+  const encoded = encodeURIComponent(waMessage);
+  window.open('https://wa.me/' + CLEANER_NUMBER + '?text=' + encoded, '_blank');
+  closeWaModal();
+}
+
+// ===== TOAST =====
+let tTimer;
+function toast(msg, isErr=false) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.className = 'show' + (isErr ? ' err' : '');
+  clearTimeout(tTimer); tTimer = setTimeout(() => el.className = '', 3000);
+}
+
+init();
+</script>
+</body>
+</html>
