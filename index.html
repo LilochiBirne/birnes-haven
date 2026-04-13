@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Birnes Haven">
 <title>Birnes Haven</title>
-<link rel="manifest" href="manifest.json">
+<link rel="manifest" href="/birnes-haven/manifest.json">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -1073,7 +1073,7 @@ function startApp() {
   showScreen('app');
   const sf = document.getElementById('s-script-url');
   if (sf && scriptUrl) sf.value = scriptUrl;
-  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('/birnes-haven/sw.js', { scope: '/birnes-haven/' }).catch(()=>{});
   updatePendingBadge();
   loadCachedPlatformBookings();
   if (scriptUrl) { generateExportUrls(); if (navigator.onLine) { loadData(); syncQueue(); } }

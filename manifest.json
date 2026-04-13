@@ -2,7 +2,7 @@
   "name": "Birnes Haven",
   "short_name": "Birnes Haven",
   "description": "BnB Booking & Expense Manager",
-  "start_url": "/index.html",
+  "start_url": "/birnes-haven/",
   "display": "standalone",
   "background_color": "#3A4D5C",
   "theme_color": "#3A4D5C",
@@ -25,5 +25,8 @@
     "finance",
     "productivity",
     "business"
-  ]
+  ],
+  "scope": "/birnes-haven/",
+  "id": "/birnes-haven/",
+  "lang": "en"
 }
