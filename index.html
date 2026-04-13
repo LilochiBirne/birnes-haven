@@ -283,6 +283,124 @@ header {
 .pbar { height:100%; border-radius:999px; background:linear-gradient(90deg,var(--sage),var(--gold)); transition:width 0.6s ease; }
 .pbar-meta { display:flex; justify-content:space-between; margin-top:5px; font-family:'DM Mono',monospace; font-size:9px; color:rgba(44,24,16,0.38); }
 
+
+/* ── CALENDAR ── */
+.cal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+.cal-nav { display:flex; align-items:center; gap:12px; }
+.cal-nav-btn {
+  font-family:'DM Mono',monospace; font-size:18px;
+  background:none; border:1px solid var(--border);
+  border-radius:10px; width:36px; height:36px;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; color:var(--brown); transition:all 0.2s;
+}
+.cal-nav-btn:hover { background:var(--warm); border-color:var(--gold); }
+.cal-month-label { font-family:'Playfair Display',serif; font-size:18px; min-width:160px; text-align:center; }
+.cal-legend { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
+.leg-item { display:flex; align-items:center; gap:5px; font-family:'DM Mono',monospace; font-size:9px; letter-spacing:1px; text-transform:uppercase; color:rgba(44,24,16,0.5); }
+.leg-dot { width:10px; height:10px; border-radius:3px; flex-shrink:0; }
+
+.cal-grid-wrap { background:var(--warm); border:1px solid var(--border); border-radius:14px; overflow:hidden; box-shadow:var(--shadow); margin-bottom:16px; }
+.cal-dow { display:grid; grid-template-columns:repeat(7,1fr); background:var(--brown); }
+.cal-dow span { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:1px; text-transform:uppercase; color:rgba(212,168,71,0.6); padding:8px 0; text-align:center; }
+.cal-days { display:grid; grid-template-columns:repeat(7,1fr); }
+.cal-cell {
+  min-height:64px; padding:4px 3px; border-right:1px solid var(--border);
+  border-bottom:1px solid var(--border); cursor:pointer;
+  transition:background 0.15s; position:relative;
+}
+.cal-cell:hover { background:rgba(212,168,71,0.05); }
+.cal-cell.today { background:rgba(212,168,71,0.08); }
+.cal-cell.other-month { opacity:0.35; }
+.cal-cell:nth-child(7n) { border-right:none; }
+.cal-day-num {
+  font-family:'DM Mono',monospace; font-size:10px;
+  color:rgba(44,24,16,0.5); margin-bottom:3px; padding:1px 3px;
+  display:inline-block;
+}
+.cal-cell.today .cal-day-num {
+  background:var(--gold); color:var(--brown);
+  border-radius:999px; padding:1px 5px;
+}
+.cal-booking-block {
+  font-size:8px; font-family:'DM Mono',monospace;
+  border-radius:3px; padding:2px 4px; margin-bottom:2px;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  color:white; line-height:1.4; cursor:pointer;
+}
+
+/* booking detail sheet */
+.cal-detail {
+  position:fixed; inset:0; background:rgba(44,24,16,0.6);
+  display:flex; align-items:flex-end; z-index:998;
+  backdrop-filter:blur(3px);
+}
+.cal-detail.hidden { display:none; }
+.cal-detail-sheet {
+  background:var(--warm); border-radius:24px 24px 0 0;
+  padding:24px 20px calc(24px + var(--safe-bottom));
+  width:100%; animation:slideUp 0.3s ease;
+}
+.cal-detail-title { font-family:'Playfair Display',serif; font-size:18px; margin-bottom:4px; }
+.cal-detail-sub { font-family:'DM Mono',monospace; font-size:10px; color:rgba(44,24,16,0.4); letter-spacing:1px; margin-bottom:16px; }
+.cal-detail-row { display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border); font-size:13px; }
+.cal-detail-row:last-child { border-bottom:none; }
+.cal-detail-key { color:rgba(44,24,16,0.5); }
+.cal-detail-val { font-family:'DM Mono',monospace; font-size:12px; font-weight:500; }
+.cal-detail-actions { display:flex; flex-direction:column; gap:8px; margin-top:16px; }
+.btn-log {
+  font-family:'DM Mono',monospace; font-size:11px; letter-spacing:2px; text-transform:uppercase;
+  background:var(--brown); color:var(--gold); border:none;
+  border-radius:14px; padding:13px; width:100%; cursor:pointer;
+}
+.btn-close-detail {
+  font-family:'DM Mono',monospace; font-size:11px; letter-spacing:1px;
+  background:none; border:1px solid var(--border); color:rgba(44,24,16,0.45);
+  border-radius:14px; padding:12px; width:100%; cursor:pointer;
+}
+
+/* iCal settings */
+.ical-card { background:var(--warm); border:1px solid var(--border); border-radius:14px; padding:16px 18px; margin-bottom:12px; box-shadow:var(--shadow); }
+.ical-card h3 { font-family:'Playfair Display',serif; font-size:15px; margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid var(--border); }
+.ical-row { display:flex; flex-direction:column; gap:5px; margin-bottom:10px; }
+.ical-row label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:1.5px; text-transform:uppercase; color:rgba(44,24,16,0.4); }
+.ical-row input {
+  font-family:'DM Mono',monospace; font-size:11px;
+  background:var(--cream); border:1.5px solid var(--border);
+  border-radius:10px; padding:10px 12px; color:var(--brown);
+  outline:none; width:100%;
+}
+.ical-row input:focus { border-color:var(--gold); }
+.ical-export-url {
+  font-family:'DM Mono',monospace; font-size:10px;
+  background:rgba(212,168,71,0.08); border:1px solid rgba(212,168,71,0.25);
+  border-radius:10px; padding:10px 12px; color:var(--mbrown);
+  word-break:break-all; margin-bottom:6px;
+}
+.btn-copy {
+  font-family:'DM Mono',monospace; font-size:10px; letter-spacing:1px;
+  background:none; border:1px solid var(--border); color:var(--mbrown);
+  border-radius:8px; padding:6px 12px; cursor:pointer; transition:all 0.2s;
+}
+.btn-copy:hover { border-color:var(--gold); color:var(--brown); }
+.btn-save-ical {
+  font-family:'DM Mono',monospace; font-size:11px; letter-spacing:2px; text-transform:uppercase;
+  background:var(--brown); color:var(--gold); border:none;
+  border-radius:12px; padding:12px; width:100%; cursor:pointer; margin-top:4px;
+}
+.cal-sync-bar {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:14px; flex-wrap:wrap; gap:8px;
+}
+.btn-sync-ical {
+  font-family:'DM Mono',monospace; font-size:10px; letter-spacing:1.5px; text-transform:uppercase;
+  background:var(--brown); color:var(--gold); border:none;
+  border-radius:10px; padding:9px 16px; cursor:pointer; display:flex; align-items:center; gap:6px;
+}
+.sync-spin { display:inline-block; animation:spin 1s linear infinite; }
+@keyframes spin { from{transform:rotate(0deg)}to{transform:rotate(360deg)} }
+.platform-bookings-count { font-family:'DM Mono',monospace; font-size:10px; color:rgba(44,24,16,0.4); letter-spacing:1px; }
+
 /* ── BOTTOM NAV ── */
 .bottom-nav {
   position: fixed;
@@ -550,6 +668,135 @@ header {
     </div>
   </div>
 
+
+
+  <!-- CALENDAR -->
+  <div id="p-calendar" class="panel">
+
+    <div class="cal-sync-bar">
+      <div class="platform-bookings-count" id="platform-count">Tap sync to load platform bookings</div>
+      <button class="btn-sync-ical" onclick="syncICal()">
+        <span id="sync-spin-icon">🔄</span> Sync Platforms
+      </button>
+    </div>
+
+    <div class="cal-legend">
+      <div class="leg-item"><div class="leg-dot" style="background:#5A8A5A"></div>Manual</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#FF5A5F"></div>Airbnb</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#003580"></div>Booking.com</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#1C6EFF"></div>VRBO</div>
+    </div>
+
+    <div class="cal-header">
+      <div class="cal-nav">
+        <button class="cal-nav-btn" onclick="changeMonth(-1)">‹</button>
+        <span class="cal-month-label" id="cal-month-label">—</span>
+        <button class="cal-nav-btn" onclick="changeMonth(1)">›</button>
+      </div>
+      <button class="btn-sync-ical" style="background:none;border:1px solid var(--border);color:var(--brown);font-size:9px;padding:7px 12px;" onclick="showICalSettings()">⚙ iCal</button>
+    </div>
+
+    <div class="filter-row" style="margin-bottom:12px;">
+      <label>Unit</label>
+      <select id="cal-unit-filter" onchange="renderCalendar()">
+        <option value="0">All Units</option>
+        <option value="1">Studio</option>
+        <option value="2">1BR Tsavo</option>
+        <option value="3">2BR Riiri</option>
+      </select>
+    </div>
+
+    <div class="cal-grid-wrap">
+      <div class="cal-dow">
+        <span>Sun</span><span>Mon</span><span>Tue</span>
+        <span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+      </div>
+      <div class="cal-days" id="cal-days"></div>
+    </div>
+
+    <div class="section-header">
+      <span class="section-title">This Month</span>
+      <span class="section-count" id="cal-bk-count">—</span>
+    </div>
+    <div class="bk-list" id="cal-bk-list"></div>
+  </div>
+
+  <!-- ICAL SETTINGS -->
+  <div id="p-ical-settings" class="panel">
+    <div class="section-header" style="margin-bottom:16px;">
+      <span class="section-title">iCal Settings</span>
+      <button class="btn-copy" onclick="showTab('calendar')">← Back</button>
+    </div>
+
+    <div class="ical-card">
+      <h3>📥 Import — Platform iCal URLs</h3>
+      <p style="font-size:12px;color:rgba(44,24,16,0.5);margin-bottom:14px;line-height:1.6;">Paste the iCal export URLs from each platform. The app will read these to show platform bookings on your calendar.</p>
+
+      <!-- Studio -->
+      <p style="font-family:'Playfair Display',serif;font-size:13px;margin-bottom:10px;color:var(--mbrown);">🏠 Studio</p>
+      <div class="ical-row"><label>Airbnb iCal URL</label><input type="url" id="ical-s-airbnb" placeholder="https://www.airbnb.com/calendar/ical/..."></div>
+      <div class="ical-row"><label>Booking.com iCal URL</label><input type="url" id="ical-s-booking" placeholder="https://ical.booking.com/v1/..."></div>
+      <div class="ical-row"><label>VRBO iCal URL</label><input type="url" id="ical-s-vrbo" placeholder="https://www.vrbo.com/icalendar/..."></div>
+
+      <hr style="border:none;border-top:1px solid var(--border);margin:14px 0;">
+
+      <!-- 1BR Tsavo -->
+      <p style="font-family:'Playfair Display',serif;font-size:13px;margin-bottom:10px;color:var(--mbrown);">🛏 1 Bedroom Tsavo</p>
+      <div class="ical-row"><label>Airbnb iCal URL</label><input type="url" id="ical-t-airbnb" placeholder="https://www.airbnb.com/calendar/ical/..."></div>
+      <div class="ical-row"><label>Booking.com iCal URL</label><input type="url" id="ical-t-booking" placeholder="https://ical.booking.com/v1/..."></div>
+      <div class="ical-row"><label>VRBO iCal URL</label><input type="url" id="ical-t-vrbo" placeholder="https://www.vrbo.com/icalendar/..."></div>
+
+      <hr style="border:none;border-top:1px solid var(--border);margin:14px 0;">
+
+      <!-- 2BR Riiri -->
+      <p style="font-family:'Playfair Display',serif;font-size:13px;margin-bottom:10px;color:var(--mbrown);">🛏 2 Bedroom Riiri</p>
+      <div class="ical-row"><label>Airbnb iCal URL</label><input type="url" id="ical-r-airbnb" placeholder="https://www.airbnb.com/calendar/ical/..."></div>
+      <div class="ical-row"><label>Booking.com iCal URL</label><input type="url" id="ical-r-booking" placeholder="https://ical.booking.com/v1/..."></div>
+      <div class="ical-row"><label>VRBO iCal URL</label><input type="url" id="ical-r-vrbo" placeholder="https://www.vrbo.com/icalendar/..."></div>
+
+      <button class="btn-save-ical" onclick="saveICalUrls()">Save iCal URLs</button>
+    </div>
+
+    <div class="ical-card">
+      <h3>📤 Export — Block Dates on Platforms</h3>
+      <p style="font-size:12px;color:rgba(44,24,16,0.5);margin-bottom:14px;line-height:1.6;">Copy these URLs and paste them into Airbnb, Booking.com and VRBO as "Import Calendar" to automatically block your manually booked dates.</p>
+
+      <p style="font-family:'Playfair Display',serif;font-size:13px;margin-bottom:8px;color:var(--mbrown);">🏠 Studio</p>
+      <div class="ical-export-url" id="export-url-1">Connect your database first to generate export URLs</div>
+      <button class="btn-copy" onclick="copyUrl('export-url-1')">Copy URL</button>
+
+      <hr style="border:none;border-top:1px solid var(--border);margin:14px 0;">
+
+      <p style="font-family:'Playfair Display',serif;font-size:13px;margin-bottom:8px;color:var(--mbrown);">🛏 1 Bedroom Tsavo</p>
+      <div class="ical-export-url" id="export-url-2">Connect your database first to generate export URLs</div>
+      <button class="btn-copy" onclick="copyUrl('export-url-2')">Copy URL</button>
+
+      <hr style="border:none;border-top:1px solid var(--border);margin:14px 0;">
+
+      <p style="font-family:'Playfair Display',serif;font-size:13px;margin-bottom:8px;color:var(--mbrown);">🛏 2 Bedroom Riiri</p>
+      <div class="ical-export-url" id="export-url-3">Connect your database first to generate export URLs</div>
+      <button class="btn-copy" onclick="copyUrl('export-url-3')">Copy URL</button>
+    </div>
+  </div>
+
+  <!-- BOOKING DETAIL SHEET -->
+  <div class="cal-detail hidden" id="cal-detail">
+    <div class="cal-detail-sheet">
+      <div class="cal-detail-title" id="cd-title">—</div>
+      <div class="cal-detail-sub" id="cd-sub">—</div>
+      <div class="cal-detail-row"><span class="cal-detail-key">Unit</span><span class="cal-detail-val" id="cd-unit">—</span></div>
+      <div class="cal-detail-row"><span class="cal-detail-key">Check-in</span><span class="cal-detail-val" id="cd-in">—</span></div>
+      <div class="cal-detail-row"><span class="cal-detail-key">Check-out</span><span class="cal-detail-val" id="cd-out">—</span></div>
+      <div class="cal-detail-row"><span class="cal-detail-key">Nights</span><span class="cal-detail-val" id="cd-nights">—</span></div>
+      <div class="cal-detail-row" id="cd-rev-row"><span class="cal-detail-key">Revenue</span><span class="cal-detail-val" id="cd-rev">—</span></div>
+      <div class="cal-detail-row" id="cd-source-row"><span class="cal-detail-key">Source</span><span class="cal-detail-val" id="cd-source">—</span></div>
+      <div class="cal-detail-actions">
+        <button class="btn-log" id="cd-log-btn" onclick="logPlatformBooking()" style="display:none">+ Log to Google Sheets</button>
+        <button class="btn-close-detail" onclick="closeDetail()">Close</button>
+      </div>
+    </div>
+  </div>
+
 </div><!-- end scroll area -->
 
 <!-- BOTTOM NAV -->
@@ -566,8 +813,11 @@ header {
     <span class="nav-icon">💰</span>
     <span class="nav-label">Expenses</span>
   </button>
+  <button class="nav-btn" data-p="calendar" onclick="switchTab(this)">
+    <span class="nav-icon">📅</span>
+    <span class="nav-label">Calendar</span>
+  </button>
 </nav>
-
 
 <!-- WHATSAPP MODAL -->
 <div id="wa-modal" class="hidden">
@@ -683,6 +933,8 @@ function init() {
   updatePendingBadge();
   // Try to sync any pending items on startup
   if (navigator.onLine) syncQueue();
+  loadCachedPlatformBookings();
+  if (scriptUrl) generateExportUrls();
 
   // Auto-refresh data when user returns to the app
   document.addEventListener('visibilitychange', () => {
@@ -750,12 +1002,26 @@ function setSync(ok) {
   updatePendingBadge();
 }
 async function api(action, data = {}) {
+  if (!scriptUrl) throw new Error('No script URL configured');
   const url = new URL(scriptUrl);
   url.searchParams.set('action', action);
-  Object.entries(data).forEach(([k,v]) => url.searchParams.set(k, v));
-  const r = await fetch(url.toString(), { redirect: 'follow' });
-  if (!r.ok) throw new Error('Network error');
-  return r.json();
+  Object.entries(data).forEach(([k,v]) => url.searchParams.set(k, String(v)));
+
+  // Google Apps Script requires redirect:follow and specific mode
+  const r = await fetch(url.toString(), {
+    method: 'GET',
+    redirect: 'follow',
+    cache: 'no-cache'
+  });
+
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  const text = await r.text();
+  try {
+    return JSON.parse(text);
+  } catch(e) {
+    console.error('Bad JSON:', text.substring(0, 300));
+    throw new Error('Server error — check Apps Script deployment');
+  }
 }
 const UNIT_NAME_MAP = {
   'Studio': 1,
@@ -783,12 +1049,19 @@ async function loadData() {
   setLoading(true);
   try {
     const d = await api('getAll');
-    bookings = normaliseBookings(d.bookings || []);
-    localStorage.setItem('bh_cache', JSON.stringify(bookings));
-    setSync(true);
+    if (d.error) {
+      console.error('Apps Script error:', d.error);
+      toast('Sheet error: ' + d.error, true);
+      bookings = normaliseBookings(JSON.parse(localStorage.getItem('bh_cache') || '[]'));
+    } else {
+      bookings = normaliseBookings(d.bookings || []);
+      localStorage.setItem('bh_cache', JSON.stringify(bookings));
+      setSync(true);
+    }
   } catch(e) {
+    console.error('Load error:', e);
     setSync(false);
-    toast('Offline — showing cached data', true);
+    toast('Load error: ' + e.message, true);
     bookings = normaliseBookings(JSON.parse(localStorage.getItem('bh_cache') || '[]'));
   }
   renderAll();
@@ -811,6 +1084,20 @@ function switchTab(btn) {
   btn.classList.add('active');
   document.getElementById('p-' + btn.dataset.p).classList.add('active');
   if (btn.dataset.p === 'expenses') renderExpenses();
+  if (btn.dataset.p === 'calendar') { initCalendar(); renderCalendar(); }
+}
+
+function showTab(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('p-' + name).classList.add('active');
+  if (name === 'calendar') { initCalendar(); renderCalendar(); }
+}
+
+function showICalSettings() {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('p-ical-settings').classList.add('active');
+  loadICalUrls();
+  if (scriptUrl) generateExportUrls();
 }
 
 // ===== DATE VALIDATION =====
@@ -1177,6 +1464,331 @@ function sendWhatsApp() {
   window.open('https://wa.me/' + CLEANER_NUMBER + '?text=' + encoded, '_blank');
   closeWaModal();
 }
+
+
+// ===== CALENDAR & ICAL =====
+let calYear  = new Date().getFullYear();
+let calMonth = new Date().getMonth();
+let platformBookings = []; // from iCal feeds
+let selectedBooking  = null;
+
+// Colors
+const SOURCE_COLORS = {
+  manual:     '#5A8A5A',
+  airbnb:     '#FF5A5F',
+  booking:    '#003580',
+  vrbo:       '#1C6EFF'
+};
+
+const ICAL_KEYS = [
+  'ical-s-airbnb','ical-s-booking','ical-s-vrbo',
+  'ical-t-airbnb','ical-t-booking','ical-t-vrbo',
+  'ical-r-airbnb','ical-r-booking','ical-r-vrbo'
+];
+
+function initCalendar() {
+  // Set current month if not set
+}
+
+function changeMonth(dir) {
+  calMonth += dir;
+  if (calMonth > 11) { calMonth = 0; calYear++; }
+  if (calMonth < 0)  { calMonth = 11; calYear--; }
+  renderCalendar();
+}
+
+function renderCalendar() {
+  const unitF = parseInt(document.getElementById('cal-unit-filter').value);
+  const label = MONTHS[calMonth] + ' ' + calYear;
+  document.getElementById('cal-month-label').textContent = label;
+
+  const today = new Date();
+  const firstDay = new Date(calYear, calMonth, 1).getDay();
+  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+  const daysInPrev  = new Date(calYear, calMonth, 0).getDate();
+
+  // Collect all bookings for this month
+  const allBookings = getAllBookingsForMonth(calYear, calMonth, unitF);
+
+  // Build calendar grid
+  const grid = document.getElementById('cal-days');
+  grid.innerHTML = '';
+
+  let totalCells = Math.ceil((firstDay + daysInMonth) / 7) * 7;
+  if (totalCells < 35) totalCells = 35;
+
+  for (let i = 0; i < totalCells; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'cal-cell';
+
+    let day, month, year, isOther = false;
+    if (i < firstDay) {
+      day = daysInPrev - firstDay + i + 1;
+      month = calMonth - 1; year = calYear;
+      if (month < 0) { month = 11; year--; }
+      isOther = true;
+    } else if (i >= firstDay + daysInMonth) {
+      day = i - firstDay - daysInMonth + 1;
+      month = calMonth + 1; year = calYear;
+      if (month > 11) { month = 0; year++; }
+      isOther = true;
+    } else {
+      day = i - firstDay + 1;
+      month = calMonth; year = calYear;
+    }
+
+    if (isOther) cell.classList.add('other-month');
+
+    const cellDate = new Date(year, month, day);
+    if (cellDate.toDateString() === today.toDateString()) cell.classList.add('today');
+
+    const dayNum = document.createElement('div');
+    dayNum.className = 'cal-day-num';
+    dayNum.textContent = day;
+    cell.appendChild(dayNum);
+
+    // Find bookings that cover this day
+    const dayBookings = allBookings.filter(b => {
+      const ci = new Date(b._checkin); ci.setHours(0,0,0,0);
+      const co = new Date(b._checkout); co.setHours(0,0,0,0);
+      return cellDate >= ci && cellDate < co;
+    });
+
+    dayBookings.forEach(b => {
+      const block = document.createElement('div');
+      block.className = 'cal-booking-block';
+      block.style.background = SOURCE_COLORS[b.source] || SOURCE_COLORS.manual;
+      block.textContent = b._label;
+      block.onclick = (e) => { e.stopPropagation(); showDetail(b); };
+      cell.appendChild(block);
+    });
+
+    grid.appendChild(cell);
+  }
+
+  // List view below calendar
+  const monthBookings = allBookings.filter((b,i,arr) =>
+    arr.findIndex(x => x._id === b._id) === i // dedupe
+  ).sort((a,b) => new Date(a._checkin) - new Date(b._checkin));
+
+  document.getElementById('cal-bk-count').textContent = monthBookings.length + ' booking' + (monthBookings.length !== 1 ? 's' : '');
+
+  const list = document.getElementById('cal-bk-list');
+  if (!monthBookings.length) {
+    list.innerHTML = '<div class="empty"><div class="empty-icon">📅</div><p>No bookings this month</p></div>';
+    return;
+  }
+
+  list.innerHTML = monthBookings.map(b => {
+    const srcColor = SOURCE_COLORS[b.source] || SOURCE_COLORS.manual;
+    return `<div class="bk-card" onclick="showDetail(${JSON.stringify(b).replace(/"/g, '&quot;')})">
+      <div class="bk-card-top">
+        <div>
+          <div class="bk-guest">${b.guest || 'Platform Booking'}</div>
+          <div class="bk-dates">${fmtDate(b._checkin)} → ${fmtDate(b._checkout)}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+          <span class="bk-badge bb-${b.unit}" style="">${UNITS[b.unit]?.short || 'Unit '+b.unit}</span>
+          <span style="font-family:'DM Mono',monospace;font-size:8px;padding:2px 7px;border-radius:999px;background:${srcColor}22;color:${srcColor};border:1px solid ${srcColor}55;">${b.source.toUpperCase()}</span>
+        </div>
+      </div>
+      ${b.revenue ? `<div class="bk-card-nums">
+        <div class="bk-num"><div class="bk-num-lbl">Revenue</div><div class="bk-num-val g">${fmtK(b.revenue)}</div></div>
+        <div class="bk-num"><div class="bk-num-lbl">Cleaning</div><div class="bk-num-val r">${fmtK(b.cleaning)}</div></div>
+        <div class="bk-num"><div class="bk-num-lbl">Net</div><div class="bk-num-val m">${fmtK(b.net)}</div></div>
+      </div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function getAllBookingsForMonth(year, month, unitF) {
+  const result = [];
+  const firstDay = new Date(year, month, 1);
+  const lastDay  = new Date(year, month + 1, 0);
+
+  // Manual bookings
+  bookings.forEach(b => {
+    if (unitF !== 0 && Number(b.unit) !== unitF) return;
+    const ci = new Date(b.checkin + 'T00:00:00');
+    const co = new Date(b.checkout + 'T00:00:00');
+    if (co < firstDay || ci > lastDay) return;
+    result.push({
+      ...b,
+      _id: 'manual-' + b.id,
+      _checkin: b.checkin,
+      _checkout: b.checkout,
+      _label: (b.guest || '').split(' ')[0],
+      source: 'manual'
+    });
+  });
+
+  // Platform bookings
+  platformBookings.forEach(b => {
+    if (unitF !== 0 && Number(b.unit) !== unitF) return;
+    const ci = new Date(b._checkin + 'T00:00:00');
+    const co = new Date(b._checkout + 'T00:00:00');
+    if (co < firstDay || ci > lastDay) return;
+    result.push(b);
+  });
+
+  return result;
+}
+
+// ── iCal Sync ──
+async function syncICal() {
+  const icon = document.getElementById('sync-spin-icon');
+  icon.classList.add('sync-spin');
+
+  const urls = JSON.parse(localStorage.getItem('bh_ical_urls') || '{}');
+  const fetched = [];
+  let count = 0;
+
+  const unitMap = {
+    's': 1, // Studio
+    't': 2, // Tsavo
+    'r': 3  // Riiri
+  };
+
+  const sourceMap = {
+    airbnb: 'airbnb',
+    booking: 'booking',
+    vrbo: 'vrbo'
+  };
+
+  for (const [key, url] of Object.entries(urls)) {
+    if (!url) continue;
+    const parts = key.split('-'); // e.g. "s-airbnb"
+    const unitKey = parts[0];
+    const platform = parts[1];
+    const unit = unitMap[unitKey];
+    const source = sourceMap[platform];
+
+    try {
+      const data = await api('fetchICal', { url: encodeURIComponent(url) });
+      if (data.events) {
+        data.events.forEach(ev => {
+          fetched.push({
+            _id: source + '-' + unit + '-' + ev.uid,
+            unit,
+            source,
+            guest: ev.summary || 'Platform Guest',
+            _checkin: ev.start,
+            _checkout: ev.end,
+            _label: source.charAt(0).toUpperCase(),
+            nights: Math.round((new Date(ev.end) - new Date(ev.start)) / 86400000)
+          });
+          count++;
+        });
+      }
+    } catch(e) {
+      console.log('iCal fetch failed for', key, e);
+    }
+  }
+
+  platformBookings = fetched;
+  localStorage.setItem('bh_platform_bookings', JSON.stringify(fetched));
+  icon.classList.remove('sync-spin');
+  document.getElementById('platform-count').textContent = count + ' platform booking' + (count !== 1 ? 's' : '') + ' loaded';
+  renderCalendar();
+  toast(count + ' platform bookings synced');
+}
+
+// ── Detail Sheet ──
+function showDetail(b) {
+  selectedBooking = b;
+  document.getElementById('cd-title').textContent = b.guest || 'Platform Booking';
+  document.getElementById('cd-sub').textContent = (b.source || 'manual').toUpperCase() + ' · ' + (UNITS[b.unit]?.name || 'Unit ' + b.unit);
+  document.getElementById('cd-unit').textContent = UNITS[b.unit]?.name || 'Unit ' + b.unit;
+  document.getElementById('cd-in').textContent = fmtDate(b._checkin);
+  document.getElementById('cd-out').textContent = fmtDate(b._checkout);
+  document.getElementById('cd-nights').textContent = b.nights || '—';
+  document.getElementById('cd-rev').textContent = b.revenue ? fmtK(b.revenue) : '—';
+  document.getElementById('cd-source').textContent = (b.source || 'manual').charAt(0).toUpperCase() + (b.source || 'manual').slice(1);
+
+  const isManual = b.source === 'manual';
+  document.getElementById('cd-rev-row').style.display = b.revenue ? 'flex' : 'none';
+  document.getElementById('cd-log-btn').style.display = isManual ? 'none' : 'block';
+
+  document.getElementById('cal-detail').classList.remove('hidden');
+}
+
+function closeDetail() {
+  document.getElementById('cal-detail').classList.add('hidden');
+  selectedBooking = null;
+}
+
+async function logPlatformBooking() {
+  if (!selectedBooking) return;
+  const b = selectedBooking;
+  const nights = b.nights || 1;
+  const bk = {
+    id: Date.now(), unit: b.unit,
+    guest: b.guest || 'Platform Guest',
+    checkin: b._checkin, checkout: b._checkout,
+    nights, rate: 0, revenue: 0,
+    cleaning: nights * CLEANING_PER_NIGHT,
+    net: -(nights * CLEANING_PER_NIGHT),
+    payment: b.source, notes: 'Imported from ' + b.source,
+    createdAt: new Date().toISOString()
+  };
+  try {
+    await api('addBooking', bk);
+    bookings.push(bk);
+    localStorage.setItem('bh_cache', JSON.stringify(bookings));
+    toast('Booking logged to Google Sheets ✓');
+    closeDetail();
+    renderCalendar();
+  } catch(e) {
+    toast('Could not log booking', true);
+  }
+}
+
+// ── iCal URL management ──
+function saveICalUrls() {
+  const urls = {};
+  ICAL_KEYS.forEach(k => {
+    const val = document.getElementById(k)?.value?.trim();
+    if (val) urls[k.replace('ical-', '')] = val;
+  });
+  localStorage.setItem('bh_ical_urls', JSON.stringify(urls));
+  toast('iCal URLs saved ✓');
+  generateExportUrls();
+}
+
+function loadICalUrls() {
+  const urls = JSON.parse(localStorage.getItem('bh_ical_urls') || '{}');
+  ICAL_KEYS.forEach(k => {
+    const el = document.getElementById(k);
+    if (el) el.value = urls[k.replace('ical-', '')] || '';
+  });
+}
+
+function generateExportUrls() {
+  if (!scriptUrl) return;
+  [1,2,3].forEach(u => {
+    const exportUrl = scriptUrl + '?action=getICal&unit=' + u;
+    const el = document.getElementById('export-url-' + u);
+    if (el) el.textContent = exportUrl;
+  });
+}
+
+function copyUrl(elId) {
+  const text = document.getElementById(elId).textContent;
+  navigator.clipboard.writeText(text).then(() => toast('URL copied ✓'));
+}
+
+// Load cached platform bookings on startup
+function loadCachedPlatformBookings() {
+  const cached = localStorage.getItem('bh_platform_bookings');
+  if (cached) {
+    platformBookings = JSON.parse(cached);
+    const count = platformBookings.length;
+    if (count > 0) {
+      document.getElementById('platform-count').textContent = count + ' platform booking' + (count !== 1 ? 's' : '') + ' (cached)';
+    }
+  }
+}
+
 
 // ===== TOAST =====
 let tTimer;
