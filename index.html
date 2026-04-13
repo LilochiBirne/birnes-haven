@@ -485,152 +485,62 @@ header {
   border-radius:14px; padding:13px; width:100%; cursor:pointer;
 }
 
-/* ── LOGIN SCREEN ── */
-#login-screen {
+/* ══ SCREEN SYSTEM ══ */
+.app-screen {
   position:fixed; inset:0;
-  background: linear-gradient(160deg, #2C3E4A 0%, #1a2830 100%);
+  background:linear-gradient(160deg,#2C3E4A 0%,#1a2830 100%);
   display:flex; align-items:center; justify-content:center;
-  z-index:1000; padding:24px;
-  flex-direction:column;
+  z-index:1000; padding:24px; overflow-y:auto;
 }
-#login-screen.hidden { display:none; }
+.screen-center { width:100%; display:flex; align-items:center; justify-content:center; }
+#screen-app { position:relative; display:flex; flex-direction:column; height:100%; z-index:1; }
 
+/* ── LOGIN & SETUP SCREENS ── */
 .login-box {
-  background:var(--warm);
-  border-radius:24px;
-  padding:36px 28px;
-  width:100%; max-width:380px;
-  box-shadow: 0 32px 80px rgba(0,0,0,0.4);
-  animation: fadeUp 0.3s ease;
+  background:var(--warm); border-radius:24px;
+  padding:36px 28px; width:100%; max-width:380px;
+  box-shadow:0 32px 80px rgba(0,0,0,0.4);
+  animation:fadeUp 0.3s ease;
 }
-.login-logo {
-  text-align:center;
-  margin-bottom:28px;
-}
-.login-logo-name {
-  font-family:'Playfair Display',serif;
-  font-size:28px;
-  color:var(--brown);
-  display:block;
-}
-.login-logo-sub {
-  font-family:'DM Mono',monospace;
-  font-size:10px;
-  letter-spacing:3px;
-  text-transform:uppercase;
-  color:rgba(44,24,16,0.35);
-  margin-top:4px;
-  display:block;
-}
-.login-title {
-  font-family:'Playfair Display',serif;
-  font-size:20px;
-  color:var(--brown);
-  margin-bottom:20px;
-  text-align:center;
-}
-.login-group {
-  display:flex; flex-direction:column; gap:6px;
-  margin-bottom:14px;
-}
-.login-group label {
-  font-family:'DM Mono',monospace; font-size:10px;
-  letter-spacing:1.5px; text-transform:uppercase;
-  color:rgba(44,24,16,0.45);
-}
+.login-logo { text-align:center; margin-bottom:28px; }
+.login-logo-name { font-family:'Playfair Display',serif; font-size:28px; color:var(--brown); display:block; }
+.login-logo-sub { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:rgba(44,24,16,0.35); margin-top:4px; display:block; }
+.login-group { display:flex; flex-direction:column; gap:6px; margin-bottom:14px; }
+.login-group label { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:rgba(44,24,16,0.45); }
 .login-group input {
   font-family:'DM Sans',sans-serif; font-size:15px;
   background:var(--cream); border:1.5px solid var(--border);
   border-radius:12px; padding:13px 15px; color:var(--brown);
-  outline:none; width:100%;
-  transition:border-color 0.2s;
+  outline:none; width:100%; transition:border-color 0.2s;
 }
 .login-group input:focus { border-color:var(--gold); box-shadow:0 0 0 3px rgba(212,168,71,0.1); }
 .login-group input.error { border-color:var(--red); }
-.login-err {
-  font-family:'DM Mono',monospace; font-size:11px;
-  color:var(--red); text-align:center;
-  margin-bottom:12px; display:none;
-}
+.login-err { font-family:'DM Mono',monospace; font-size:11px; color:var(--red); text-align:center; margin-bottom:12px; display:none; }
 .btn-login {
-  font-family:'DM Mono',monospace; font-size:12px;
-  letter-spacing:2px; text-transform:uppercase;
-  background:var(--brown); color:var(--gold);
-  border:none; border-radius:14px; padding:15px;
-  width:100%; cursor:pointer; margin-top:4px;
+  font-family:'DM Mono',monospace; font-size:12px; letter-spacing:2px; text-transform:uppercase;
+  background:var(--brown); color:var(--gold); border:none;
+  border-radius:14px; padding:15px; width:100%; cursor:pointer; margin-top:4px;
   transition:opacity 0.2s;
 }
 .btn-login:hover { opacity:0.85; }
 
-/* ── SCRIPT URL SETUP (post-login, first time) ── */
-#url-setup-screen {
-  position:fixed; inset:0;
-  background:rgba(44,24,16,0.92);
-  display:flex; align-items:flex-end;
-  z-index:998; padding:0;
-}
-#url-setup-screen.hidden { display:none; }
-#login-screen.hidden { display:none; }
-.url-setup-sheet {
-  background:var(--warm);
-  border-radius:24px 24px 0 0;
-  padding:28px 24px calc(28px + var(--safe-bottom));
-  width:100%; max-height:85vh; overflow-y:auto;
-}
-.url-setup-sheet h2 {
-  font-family:'Playfair Display',serif; font-size:21px;
-  margin-bottom:4px;
-}
-.url-setup-sub {
-  font-family:'DM Mono',monospace; font-size:10px;
-  color:rgba(44,24,16,0.4); letter-spacing:1px;
-  margin-bottom:22px;
-}
-
-/* ── SETTINGS PANEL ── */
+/* ── SETTINGS ── */
 .settings-section {
   background:var(--warm); border:1px solid var(--border);
   border-radius:14px; padding:18px 20px; margin-bottom:14px;
   box-shadow:var(--shadow);
 }
-.settings-section h3 {
-  font-family:'Playfair Display',serif; font-size:16px;
-  margin-bottom:16px; padding-bottom:10px;
-  border-bottom:1px solid var(--border);
-}
-.settings-group {
-  display:flex; flex-direction:column; gap:5px;
-  margin-bottom:12px;
-}
-.settings-group label {
-  font-family:'DM Mono',monospace; font-size:10px;
-  letter-spacing:1.5px; text-transform:uppercase;
-  color:rgba(44,24,16,0.4);
-}
-.settings-group input {
-  font-family:'DM Sans',sans-serif; font-size:14px;
-  background:var(--cream); border:1.5px solid var(--border);
-  border-radius:10px; padding:10px 13px; color:var(--brown);
-  outline:none; width:100%;
-  transition:border-color 0.2s;
-}
+.settings-section h3 { font-family:'Playfair Display',serif; font-size:16px; margin-bottom:16px; padding-bottom:10px; border-bottom:1px solid var(--border); }
+.settings-group { display:flex; flex-direction:column; gap:5px; margin-bottom:12px; }
+.settings-group label { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:rgba(44,24,16,0.4); }
+.settings-group input { font-family:'DM Sans',sans-serif; font-size:14px; background:var(--cream); border:1.5px solid var(--border); border-radius:10px; padding:10px 13px; color:var(--brown); outline:none; width:100%; transition:border-color 0.2s; }
 .settings-group input:focus { border-color:var(--gold); }
-.btn-settings-save {
-  font-family:'DM Mono',monospace; font-size:11px;
-  letter-spacing:2px; text-transform:uppercase;
-  background:var(--brown); color:var(--gold);
-  border:none; border-radius:12px; padding:12px;
-  width:100%; cursor:pointer; margin-top:6px;
-}
-.btn-logout {
-  font-family:'DM Mono',monospace; font-size:11px;
-  letter-spacing:2px; text-transform:uppercase;
-  background:none; border:1px solid rgba(199,91,78,0.3);
-  color:var(--red); border-radius:12px; padding:12px;
-  width:100%; cursor:pointer; margin-top:8px;
-  transition:all 0.2s;
-}
+.btn-settings-save { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:2px; text-transform:uppercase; background:var(--brown); color:var(--gold); border:none; border-radius:12px; padding:12px; width:100%; cursor:pointer; margin-top:6px; }
+.btn-logout { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:2px; text-transform:uppercase; background:none; border:1px solid rgba(199,91,78,0.3); color:var(--red); border-radius:12px; padding:12px; width:100%; cursor:pointer; margin-top:8px; transition:all 0.2s; }
 .btn-logout:hover { background:rgba(199,91,78,0.08); border-color:var(--red); }
+
+/* ── PENDING BADGE ── */
+.pending-badge { background:var(--gold); color:var(--brown); font-family:'DM Mono',monospace; font-size:9px; font-weight:700; width:16px; height:16px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; margin-left:2px; }
 
 </style>
 </head>
@@ -638,60 +548,63 @@ header {
 
 <div id="lbar"></div>
 
-<!-- SETUP BOTTOM SHEET -->
-      <div class="setup-step"><div class="step-n">2</div><div class="step-t"><strong>Paste the backend code</strong>Delete everything, paste the full <code>apps-script.gs</code> file</div></div>
-      <div class="setup-step"><div class="step-n">3</div><div class="step-t"><strong>Deploy as Web App</strong><code>Deploy → New deployment</code> → Web app → Execute as: <em>Me</em> → Access: <em>Anyone</em> → Deploy → Authorise</div></div>
-      <div class="setup-step"><div class="step-n">4</div><div class="step-t"><strong>Copy the URL ending in /exec and paste below</strong></div></div>
-    </div>
-    <label class="setup-label">Apps Script Web App URL</label>
-    <input class="setup-input" type="url" id="url-input" placeholder="https://script.google.com/macros/s/.../exec" onkeydown="if(event.key==='Enter') saveUrl()">
-    <div id="url-error" style="display:none;font-family:DM Mono,monospace;font-size:11px;color:#C75B4E;margin-bottom:8px;">Please paste the correct URL ending in /exec</div>
-    <button class="btn-connect" onclick="saveUrl()">Connect & Start →</button>
-  </div>
-</div>
-
-<!-- LOGIN SCREEN -->
-<div id="login-screen" class="hidden">
-  <div class="login-box">
-    <div class="login-logo">
-      <span class="login-logo-name">Birnes Haven</span>
-      <span class="login-logo-sub">BnB Manager</span>
-    </div>
-    <div class="login-title">Welcome back</div>
-    <div class="login-group">
-      <label>Username</label>
-      <input type="text" id="login-username" placeholder="Enter username" autocomplete="username"
-        onkeydown="if(event.key==='Enter') document.getElementById('login-password').focus()">
-    </div>
-    <div class="login-group">
-      <label>Password</label>
-      <input type="password" id="login-password" placeholder="Enter password" autocomplete="current-password"
-        onkeydown="if(event.key==='Enter') doLogin()">
-    </div>
-    <div class="login-err" id="login-err">Incorrect username or password</div>
-    <button class="btn-login" onclick="doLogin()">Sign In →</button>
-  </div>
-</div>
-
-<!-- URL SETUP SCREEN (shown once after first login) -->
-<div id="url-setup-screen" class="hidden">
-  <div class="url-setup-sheet">
-    <h2>Connect Database</h2>
-    <p class="url-setup-sub">One-time setup · paste your Google Apps Script URL</p>
-    <div class="setup-steps">
-      <div class="setup-step"><div class="step-n">1</div><div class="step-t"><strong>Open Google Apps Script</strong>Go to <a href="https://script.google.com" target="_blank">script.google.com</a> → open your project</div></div>
-      <div class="setup-step"><div class="step-n">2</div><div class="step-t"><strong>Deploy as Web App</strong><code>Deploy → Manage deployments</code> → copy the URL ending in <code>/exec</code></div></div>
-      <div class="setup-step"><div class="step-n">3</div><div class="step-t"><strong>Paste it below</strong></div></div>
-    </div>
-    <label class="setup-label">Google Apps Script URL</label>
-    <input class="setup-input" type="url" id="url-input" placeholder="https://script.google.com/macros/s/.../exec"
-      onkeydown="if(event.key==='Enter') saveUrl()">
-    <div id="url-error" style="display:none;font-family:'DM Mono',monospace;font-size:11px;color:var(--red);margin-bottom:8px;">Please paste a valid URL ending in /exec</div>
-    <button class="btn-connect" onclick="saveUrl()">Connect & Start →</button>
-  </div>
-</div>
-
 <!-- HEADER -->
+
+<!-- ══ SCREEN 1: LOGIN ══ -->
+<div id="screen-login" class="app-screen">
+  <div class="screen-center">
+    <div class="login-box">
+      <div class="login-logo">
+        <span class="login-logo-name">Birnes Haven</span>
+        <span class="login-logo-sub">BnB Manager</span>
+      </div>
+      <div class="login-group">
+        <label>Username</label>
+        <input type="text" id="login-username" placeholder="Enter username" autocomplete="username"
+          onkeydown="if(event.key==='Enter') document.getElementById('login-password').focus()">
+      </div>
+      <div class="login-group">
+        <label>Password</label>
+        <input type="password" id="login-password" placeholder="Enter password" autocomplete="current-password"
+          onkeydown="if(event.key==='Enter') doLogin()">
+      </div>
+      <div class="login-err" id="login-err">Incorrect username or password</div>
+      <button class="btn-login" onclick="doLogin()">Sign In →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SCREEN 2: DATABASE SETUP ══ -->
+<div id="screen-setup" class="app-screen" style="display:none">
+  <div class="screen-center">
+    <div class="login-box" style="max-width:420px">
+      <div class="login-logo">
+        <span class="login-logo-name">Connect Database</span>
+        <span class="login-logo-sub" style="letter-spacing:1px;">One-time setup</span>
+      </div>
+      <div style="background:var(--cream);border-radius:12px;padding:14px;margin-bottom:18px;font-size:12px;line-height:1.9;color:rgba(44,24,16,0.65);">
+        <strong style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;">Step 1</strong><br>
+        Go to <a href="https://script.google.com" target="_blank" style="color:var(--mbrown)">script.google.com</a> → open your project<br><br>
+        <strong style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;">Step 2</strong><br>
+        Deploy → Manage deployments → copy URL ending in <code style="font-family:'DM Mono',monospace;font-size:11px;background:rgba(44,24,16,0.08);padding:1px 5px;border-radius:4px;">/exec</code><br><br>
+        <strong style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;">Step 3</strong><br>
+        Paste below and tap Connect
+      </div>
+      <div class="login-group">
+        <label>Apps Script URL</label>
+        <input type="url" id="url-input" placeholder="https://script.google.com/macros/s/.../exec"
+          onkeydown="if(event.key==='Enter') saveUrl()">
+      </div>
+      <div class="login-err" id="url-error">Please paste a valid URL ending in /exec</div>
+      <button class="btn-login" onclick="saveUrl()">Connect & Continue →</button>
+      <button onclick="skipSetup()" style="margin-top:10px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;background:none;border:none;color:rgba(44,24,16,0.35);cursor:pointer;width:100%;text-align:center;padding:8px;">Skip for now (offline mode)</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SCREEN 3: MAIN APP ══ -->
+<div id="screen-app" style="display:none;flex-direction:column;height:100%;">
+
 <header>
   <div class="logo-wrap">
     <div class="logo-name">Birnes Haven</div>
@@ -984,35 +897,18 @@ header {
   <!-- SETTINGS -->
   <div id="p-settings" class="panel">
     <div class="settings-section">
-      <h3>🔐 Change Login Credentials</h3>
-      <div class="settings-group">
-        <label>Current Password</label>
-        <input type="password" id="s-current-pw" placeholder="Enter current password">
-      </div>
-      <div class="settings-group">
-        <label>New Username</label>
-        <input type="text" id="s-new-user" placeholder="Enter new username">
-      </div>
-      <div class="settings-group">
-        <label>New Password</label>
-        <input type="password" id="s-new-pw" placeholder="Enter new password">
-      </div>
-      <div class="settings-group">
-        <label>Confirm New Password</label>
-        <input type="password" id="s-confirm-pw" placeholder="Confirm new password">
-      </div>
-      <button class="btn-settings-save" onclick="changeCredentials()">Save Changes</button>
+      <h3>🔐 Change Login</h3>
+      <div class="settings-group"><label>Current Password</label><input type="password" id="s-current-pw" placeholder="Current password"></div>
+      <div class="settings-group"><label>New Username</label><input type="text" id="s-new-user" placeholder="New username"></div>
+      <div class="settings-group"><label>New Password</label><input type="password" id="s-new-pw" placeholder="New password"></div>
+      <div class="settings-group"><label>Confirm Password</label><input type="password" id="s-confirm-pw" placeholder="Confirm new password"></div>
+      <button class="btn-settings-save" onclick="changeCredentials()">Save Credentials</button>
     </div>
-
     <div class="settings-section">
       <h3>🔗 Database URL</h3>
-      <div class="settings-group">
-        <label>Google Apps Script URL</label>
-        <input type="url" id="s-script-url" placeholder="https://script.google.com/macros/s/.../exec">
-      </div>
+      <div class="settings-group"><label>Apps Script URL</label><input type="url" id="s-script-url" placeholder="https://script.google.com/macros/s/.../exec"></div>
       <button class="btn-settings-save" onclick="saveScriptUrl()">Update URL</button>
     </div>
-
     <div class="settings-section">
       <h3>⚠️ Session</h3>
       <button class="btn-logout" onclick="logout()">Sign Out</button>
@@ -1147,46 +1043,27 @@ window.addEventListener('offline', () => {
   toast('You are offline — bookings will be saved locally', true);
 });
 // ===== INIT =====
-function init() {
-  fillFilters();
-
-  // Check login first
-  if (!isLoggedIn()) {
-    document.getElementById('login-screen').classList.remove('hidden');
-    return; // Stop here — don't load app until logged in
-  }
-
-  // Logged in — keep login screen hidden
-  document.getElementById('login-screen').classList.add('hidden');
-
-  // Check if script URL is configured
-  if (!scriptUrl) {
-    document.getElementById('url-setup-screen').classList.remove('hidden');
-  } else {
-    loadData();
-  }
-
-  // Populate settings URL field
+function startApp() {
+  showScreen('app');
   const sf = document.getElementById('s-script-url');
   if (sf && scriptUrl) sf.value = scriptUrl;
-
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js').catch(() => {});
-  }
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
   updatePendingBadge();
   loadCachedPlatformBookings();
-  if (scriptUrl) generateExportUrls();
-  if (navigator.onLine) syncQueue();
-
+  if (scriptUrl) { generateExportUrls(); if (navigator.onLine) { loadData(); syncQueue(); } }
   document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible' && navigator.onLine && scriptUrl && isLoggedIn()) {
-      loadData();
-    }
+    if (document.visibilityState==='visible' && navigator.onLine && scriptUrl && isLoggedIn()) loadData();
   });
-
   window.addEventListener('focus', () => {
     if (navigator.onLine && scriptUrl && isLoggedIn()) loadData();
   });
+}
+
+function init() {
+  fillFilters();
+  if (!isLoggedIn()) { showScreen('login'); return; }
+  if (!scriptUrl)    { showScreen('setup'); return; }
+  startApp();
 }
 
 function fillFilters() {
@@ -1220,14 +1097,13 @@ function saveUrl() {
   document.getElementById('url-error').style.display = 'none';
   scriptUrl = v;
   localStorage.setItem('bh_url', scriptUrl);
-  document.getElementById('url-setup-screen').classList.add('hidden');
-  // Also update the settings field
-  const sf = document.getElementById('s-script-url');
-  if (sf) sf.value = v;
+  document.getElementById('setup-overlay').classList.add('hidden');
   loadData();
 }
 function resetSetup() {
-  // Now handled in Settings panel
+  if (!confirm('Reconnect to a different database URL?')) return;
+  localStorage.removeItem('bh_url'); scriptUrl = '';
+  document.getElementById('setup-overlay').classList.remove('hidden');
 }
 
 // ===== API =====
@@ -1245,42 +1121,18 @@ function setSync(ok) {
 async function api(action, data = {}) {
   if (!scriptUrl) throw new Error('No script URL configured');
   return new Promise((resolve, reject) => {
-    // Use script-tag injection to bypass CORS — works reliably with Google Apps Script
     const cbName = 'gascb_' + Date.now() + '_' + Math.random().toString(36).slice(2);
-
     const url = new URL(scriptUrl);
     url.searchParams.set('action', action);
     url.searchParams.set('callback', cbName);
     Object.entries(data).forEach(([k,v]) => url.searchParams.set(k, String(v)));
-
-    const timer = setTimeout(() => {
-      cleanup();
-      reject(new Error('Request timed out — check your Apps Script URL'));
-    }, 15000);
-
-    function cleanup() {
-      clearTimeout(timer);
-      delete window[cbName];
-      const el = document.getElementById(cbName);
-      if (el) el.remove();
-    }
-
-    window[cbName] = function(result) {
-      cleanup();
-      if (result && result.error) {
-        reject(new Error('Script error: ' + result.error));
-      } else {
-        resolve(result);
-      }
-    };
-
+    const timer = setTimeout(() => { cleanup(); reject(new Error('Request timed out')); }, 15000);
+    function cleanup() { clearTimeout(timer); delete window[cbName]; const el=document.getElementById(cbName); if(el) el.remove(); }
+    window[cbName] = function(result) { cleanup(); if(result && result.error) reject(new Error(result.error)); else resolve(result); };
     const script = document.createElement('script');
     script.id = cbName;
     script.src = url.toString();
-    script.onerror = () => {
-      cleanup();
-      reject(new Error('Could not reach server — check URL and deployment'));
-    };
+    script.onerror = () => { cleanup(); reject(new Error('Could not reach server')); };
     document.head.appendChild(script);
   });
 }
@@ -2052,12 +1904,20 @@ function loadCachedPlatformBookings() {
 
 
 
-// ===== AUTH =====
+// ══ SCREEN MANAGER ══
+function showScreen(name) {
+  ['screen-login','screen-setup','screen-app'].forEach(id => {
+    document.getElementById(id).style.display = 'none';
+  });
+  const target = document.getElementById('screen-' + name);
+  target.style.display = (name === 'app') ? 'flex' : 'flex';
+}
+
+// ══ AUTH ══
 const DEFAULT_USER = 'Lilochi';
 const DEFAULT_PASS = 'Birnes';
 
 function hashStr(str) {
-  // Simple hash — not cryptographic but prevents plain text storage
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
     const c = str.charCodeAt(i);
@@ -2070,11 +1930,7 @@ function hashStr(str) {
 function getStoredCreds() {
   const stored = localStorage.getItem('bh_creds');
   if (stored) return JSON.parse(stored);
-  // Default credentials
-  return {
-    username: hashStr(DEFAULT_USER),
-    password: hashStr(DEFAULT_PASS)
-  };
+  return { username: hashStr(DEFAULT_USER), password: hashStr(DEFAULT_PASS) };
 }
 
 function isLoggedIn() {
@@ -2087,56 +1943,32 @@ function doLogin() {
   const errEl = document.getElementById('login-err');
   const creds = getStoredCreds();
 
-  if (!u || !p) {
-    errEl.style.display = 'block';
-    errEl.textContent = 'Please enter username and password';
-    return;
-  }
+  if (!u || !p) { errEl.style.display='block'; errEl.textContent='Please enter username and password'; return; }
 
   if (hashStr(u) === creds.username && hashStr(p) === creds.password) {
-    // Success
-    sessionStorage.setItem('bh_session', '1');
-    document.getElementById('login-screen').classList.add('hidden');
+    sessionStorage.setItem('bh_session','1');
     document.getElementById('login-username').value = '';
     document.getElementById('login-password').value = '';
     errEl.style.display = 'none';
-
-    // Initialize app after login
-    updatePendingBadge();
-    loadCachedPlatformBookings();
-    if (scriptUrl) generateExportUrls();
-    if (navigator.onLine) syncQueue();
-
-    // Check if script URL is set
-    if (!scriptUrl) {
-      document.getElementById('url-setup-screen').classList.remove('hidden');
-    } else {
-      loadData();
-    }
-
-    // Populate settings URL field
-    const sf = document.getElementById('s-script-url');
-    if (sf && scriptUrl) sf.value = scriptUrl;
+    if (!scriptUrl) { showScreen('setup'); } else { startApp(); }
   } else {
-    // Wrong credentials
     errEl.style.display = 'block';
     errEl.textContent = 'Incorrect username or password';
     document.getElementById('login-password').value = '';
-    document.getElementById('login-username').classList.add('error');
-    document.getElementById('login-password').classList.add('error');
-    setTimeout(() => {
-      document.getElementById('login-username').classList.remove('error');
-      document.getElementById('login-password').classList.remove('error');
-    }, 1500);
+    ['login-username','login-password'].forEach(id => {
+      document.getElementById(id).classList.add('error');
+      setTimeout(() => document.getElementById(id).classList.remove('error'), 1500);
+    });
   }
 }
 
 function logout() {
   if (!confirm('Sign out of Birnes Haven?')) return;
   sessionStorage.removeItem('bh_session');
-  document.getElementById('login-screen').classList.remove('hidden');
   document.getElementById('login-username').value = '';
   document.getElementById('login-password').value = '';
+  document.getElementById('login-err').style.display = 'none';
+  showScreen('login');
 }
 
 function changeCredentials() {
@@ -2145,42 +1977,38 @@ function changeCredentials() {
   const newPw     = document.getElementById('s-new-pw').value;
   const confirmPw = document.getElementById('s-confirm-pw').value;
   const creds = getStoredCreds();
-
-  if (hashStr(currentPw) !== creds.password) {
-    toast('Current password is incorrect', true); return;
-  }
-  if (!newUser || !newPw) {
-    toast('Please fill in all fields', true); return;
-  }
-  if (newPw !== confirmPw) {
-    toast('New passwords do not match', true); return;
-  }
-  if (newPw.length < 4) {
-    toast('Password must be at least 4 characters', true); return;
-  }
-
-  localStorage.setItem('bh_creds', JSON.stringify({
-    username: hashStr(newUser),
-    password: hashStr(newPw)
-  }));
-
-  toast('Login credentials updated ✓');
-  document.getElementById('s-current-pw').value = '';
-  document.getElementById('s-new-user').value = '';
-  document.getElementById('s-new-pw').value = '';
-  document.getElementById('s-confirm-pw').value = '';
+  if (hashStr(currentPw) !== creds.password) { toast('Current password incorrect', true); return; }
+  if (!newUser || !newPw) { toast('Fill in all fields', true); return; }
+  if (newPw !== confirmPw) { toast('Passwords do not match', true); return; }
+  if (newPw.length < 4) { toast('Password must be at least 4 characters', true); return; }
+  localStorage.setItem('bh_creds', JSON.stringify({ username:hashStr(newUser), password:hashStr(newPw) }));
+  toast('Credentials updated ✓');
+  ['s-current-pw','s-new-user','s-new-pw','s-confirm-pw'].forEach(id => document.getElementById(id).value = '');
 }
+
+function saveUrl() {
+  const v = document.getElementById('url-input').value.trim();
+  const errEl = document.getElementById('url-error');
+  if (!v || !v.includes('script.google.com')) { errEl.style.display='block'; return; }
+  errEl.style.display = 'none';
+  scriptUrl = v;
+  localStorage.setItem('bh_url', scriptUrl);
+  startApp();
+}
+
+function skipSetup() { startApp(); }
 
 function saveScriptUrl() {
   const v = document.getElementById('s-script-url').value.trim();
-  if (!v || !v.includes('script.google.com')) {
-    toast('Please paste a valid Apps Script URL', true); return;
-  }
+  if (!v || !v.includes('script.google.com')) { toast('Paste a valid Apps Script URL', true); return; }
   scriptUrl = v;
   localStorage.setItem('bh_url', scriptUrl);
-  toast('Database URL updated ✓');
+  toast('URL updated ✓');
+  generateExportUrls();
   loadData();
 }
+
+function resetSetup() { showScreen('setup'); }
 
 
 // ===== TOAST =====
@@ -2193,5 +2021,7 @@ function toast(msg, isErr=false) {
 
 init();
 </script>
+
+</div><!-- end screen-app -->
 </body>
 </html>
