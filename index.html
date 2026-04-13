@@ -570,6 +570,7 @@ header {
   z-index:998; padding:0;
 }
 #url-setup-screen.hidden { display:none; }
+#login-screen.hidden { display:none; }
 .url-setup-sheet {
   background:var(--warm);
   border-radius:24px 24px 0 0;
@@ -650,7 +651,7 @@ header {
 </div>
 
 <!-- LOGIN SCREEN -->
-<div id="login-screen">
+<div id="login-screen" class="hidden">
   <div class="login-box">
     <div class="login-logo">
       <span class="login-logo-name">Birnes Haven</span>
@@ -1151,12 +1152,11 @@ function init() {
 
   // Check login first
   if (!isLoggedIn()) {
-    // Show login screen — hide everything else
     document.getElementById('login-screen').classList.remove('hidden');
-    return;
+    return; // Stop here — don't load app until logged in
   }
 
-  // Already logged in — hide login screen
+  // Logged in — keep login screen hidden
   document.getElementById('login-screen').classList.add('hidden');
 
   // Check if script URL is configured
@@ -1174,9 +1174,9 @@ function init() {
     navigator.serviceWorker.register('sw.js').catch(() => {});
   }
   updatePendingBadge();
-  if (navigator.onLine) syncQueue();
   loadCachedPlatformBookings();
   if (scriptUrl) generateExportUrls();
+  if (navigator.onLine) syncQueue();
 
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible' && navigator.onLine && scriptUrl && isLoggedIn()) {
@@ -2101,12 +2101,22 @@ function doLogin() {
     document.getElementById('login-password').value = '';
     errEl.style.display = 'none';
 
+    // Initialize app after login
+    updatePendingBadge();
+    loadCachedPlatformBookings();
+    if (scriptUrl) generateExportUrls();
+    if (navigator.onLine) syncQueue();
+
     // Check if script URL is set
     if (!scriptUrl) {
       document.getElementById('url-setup-screen').classList.remove('hidden');
     } else {
       loadData();
     }
+
+    // Populate settings URL field
+    const sf = document.getElementById('s-script-url');
+    if (sf && scriptUrl) sf.value = scriptUrl;
   } else {
     // Wrong credentials
     errEl.style.display = 'block';
